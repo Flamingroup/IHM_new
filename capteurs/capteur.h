@@ -1,15 +1,20 @@
 #ifndef CAPTEUR_H
 #define CAPTEUR_H
-#include <map>
+#include <QVector>
+#include <QPoint>
+#include <qwt_plot_curve.h>
+#include <QObject>
 
-class Capteur
+class Capteur : public QObject
 {
 	private:
-		std::map<double, double> resultat;
-		u_int16_t minvalue;
-		u_int16_t maxvalue;
+		QVector<QPointF*> times;
+		QwtPlotCurve curve;
+		QColor color;
 	public:
 		Capteur();
+		void addValue(double instantMesure, double value);
+		void setColor(QColor nColor);
 };
 
 #endif // CAPTEUR_H

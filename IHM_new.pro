@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     ordermeteostation/order0r2.cpp \
     ordermeteostation/order0r3.cpp \
     ordermeteostation/order0r5.cpp \
-    parseurs/retour/parseurretour0r5.cpp
+    parseurs/retour/parseurretour0r5.cpp \
+    plot.cpp
 
 HEADERS  += mainwindow.h \
     communication/communication.h \
@@ -54,6 +55,7 @@ HEADERS  += mainwindow.h \
     ordermeteostation/order0r3.h \
     ordermeteostation/order0r5.h \
     parseurs/retour/parseurretour0r3.h \
-    parseurs/retour/parseurretour0r5.h
+    parseurs/retour/parseurretour0r5.h \
+    plot.h
 
 FORMS    += mainwindow.ui

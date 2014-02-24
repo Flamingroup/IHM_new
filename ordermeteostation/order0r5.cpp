@@ -4,4 +4,5 @@
 Order0R5::Order0R5()
 {
 	p=new ParseurRetour0R5;
+	order="OR5";
 }

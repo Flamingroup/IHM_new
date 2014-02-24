@@ -2,6 +2,7 @@
 #define ORDER0R1_H
 
 #include <ordermeteostation/ordermeteostation.h>
+#include <string>
 
 class Order0R1 : public OrderMeteoStation
 {

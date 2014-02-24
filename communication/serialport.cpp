@@ -1,7 +1,7 @@
 #include "serialport.h"
 #include "portselection.h"
 #include <QMessageBox>
-
+#include <mainwindow.h>
 
 SerialPort::SerialPort(QWidget* parent)
 	:Communication(parent)
@@ -11,11 +11,11 @@ SerialPort::SerialPort(QWidget* parent)
 
 void SerialPort::configurer()
 {
-	new QextSerialPort();
+	tmp_port = new QextSerialPort();
 	PortSelection* s = new PortSelection(tmp_port, this);
 	connect(s, SIGNAL(accepted()), this, SLOT(validateConfig()));
 	s->exec();
-	//parent->m_status->setText(tr("Port %1 configured.").arg(m_port->portName()));
+	//Bar-> setText(tr("Port %1 configured.").arg(m_port->portName()));
 }
 
 void SerialPort::sendCommand()
@@ -59,4 +59,5 @@ void SerialPort::validateConfig()
 	delete m_port;
 	m_port = tmp_port;
 	tmp_port=NULL;
+	configured=true;
 }
