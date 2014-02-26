@@ -6,6 +6,7 @@
 #include <plot.h>
 #include <stationmeteo.h>
 #include <capteurs/capteur.h>
+#include <QTimer>
 
 namespace Ui {
 	class MainWindow;
@@ -24,15 +25,19 @@ class MainWindow : public QMainWindow
 		Plot* m_plot;
 		StationMeteo meteo;
 		vector<Capteur*> t_capteurs;
+		QTimer timer;
 
 	public slots:
-		void createCommunication();
+		void createCommunicationSerie();
 		void launchAcquisition();
 		//void clearCurve();
 		void saveData();
 		void loadData();
 		void about();
-
+		void dialChangedSpin(double value);
+		void dialChanged(int value);
+		void pauseAcquisition();
+		void stopAcquisition();
 };
 
 #endif // MAINWINDOW_H

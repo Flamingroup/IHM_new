@@ -4,8 +4,10 @@
 #include <communication/communication.h>
 #include "qextserialport.h"
 #include <map>
+#include <string>
 
 using std::map;
+using std::string;
 
 class SerialPort : public Communication
 {

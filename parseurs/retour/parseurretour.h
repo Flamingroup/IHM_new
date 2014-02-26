@@ -5,6 +5,7 @@ class ParseurRetour
 {
 	public:
 		ParseurRetour();
+
 };
 
 #endif // PARSEURRETOUR_H

@@ -3,7 +3,8 @@
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QMessageBox>
-
+#include <communication/serialport.h>
+#include <QString>
 
 PortSelection::PortSelection(QextSerialPort *port, QWidget *parent) :
     QDialog(parent)
@@ -42,7 +43,7 @@ PortSelection::PortSelection(QextSerialPort *port, QWidget *parent) :
     box_stopBit->addItem("STOP_1");
     box_stopBit->addItem("STOP_2");
 
-    m_name = new QLineEdit;
+	m_name = new QLineEdit;
 
     QFormLayout* formlayout = new QFormLayout;
     formlayout->addRow("Port name : ", m_name);
@@ -56,7 +57,8 @@ PortSelection::PortSelection(QextSerialPort *port, QWidget *parent) :
     m_ok = new QPushButton("Ok", this);
     m_cancel = new QPushButton("Cancel", this);
 
-    QObject::connect(m_ok, SIGNAL(clicked()), this, SLOT(initPort()));
+	QObject::connect(m_ok, SIGNAL(clicked()), this, SLOT(initPort()));
+	QObject::connect(m_ok, SIGNAL(clicked()), parent, SLOT(validateConfig()));
     QObject::connect(m_cancel, SIGNAL(clicked()), this, SLOT(close()));
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
@@ -107,7 +109,7 @@ void PortSelection::initPort(void)
     m_port->setDataBits(map_dataBits.find(box_dataBits->currentText())->second);
     m_port->setFlowControl(map_flowControl.find(box_flowControl->currentText())->second);
     m_port->setParity(map_parity.find(box_parity->currentText())->second);
-    m_port->setStopBits(map_stopBits.find(box_stopBit->currentText())->second);
+	m_port->setStopBits(map_stopBits.find(box_stopBit->currentText())->second);
 	// Fonctionne comme ça sans le find normalement :
 	//m_port->setStopBits(map_stopBits[box_stopBit->currentText()]);
 

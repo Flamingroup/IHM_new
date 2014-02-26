@@ -2,10 +2,13 @@
 #include "portselection.h"
 #include <QMessageBox>
 #include <mainwindow.h>
+#include <iostream>
+
 
 SerialPort::SerialPort(QWidget* parent)
 	:Communication(parent)
 {
+	type=Type::Serie;
 	m_port = new QextSerialPort();
 }
 
@@ -13,7 +16,6 @@ void SerialPort::configurer()
 {
 	tmp_port = new QextSerialPort();
 	PortSelection* s = new PortSelection(tmp_port, this);
-	connect(s, SIGNAL(accepted()), this, SLOT(validateConfig()));
 	s->exec();
 	//Bar-> setText(tr("Port %1 configured.").arg(m_port->portName()));
 }

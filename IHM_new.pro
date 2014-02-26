@@ -27,7 +27,6 @@ SOURCES += main.cpp\
     parseurs/retour/parseurretour.cpp \
     parseurs/retour/parseurretour0r1.cpp \
     parseurs/retour/parseurretour0r2.cpp \
-    parseurs/retour/parseururetour0r3.cpp \
     parseurs/envoi/parseurenvoi.cpp \
     capteurs/capteur.cpp \
     stationmeteo.cpp \
@@ -37,7 +36,8 @@ SOURCES += main.cpp\
     ordermeteostation/order0r3.cpp \
     ordermeteostation/order0r5.cpp \
     parseurs/retour/parseurretour0r5.cpp \
-    plot.cpp
+    plot.cpp \
+    parseurs/retour/parseurretour0r3.cpp
 
 HEADERS  += mainwindow.h \
     communication/communication.h \
