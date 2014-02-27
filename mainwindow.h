@@ -7,6 +7,9 @@
 #include <stationmeteo.h>
 #include <capteurs/capteur.h>
 #include <QTimer>
+#include <qwt_compass_rose.h>
+#include <qwt_dial_needle.h>
+#include <QColorDialog>
 
 namespace Ui {
 	class MainWindow;
@@ -22,10 +25,13 @@ class MainWindow : public QMainWindow
 	private:
 		Ui::MainWindow *ui;
 		Communication* com = NULL;
-		Plot* m_plot;
+		Plot* p_plot;
 		StationMeteo meteo;
 		vector<Capteur*> t_capteurs;
 		QTimer timer;
+		QwtSimpleCompassRose *rose;
+		QwtCompassWindArrow *needle;
+		Capteur analog1;
 
 	public slots:
 		void createCommunicationSerie();
@@ -38,6 +44,25 @@ class MainWindow : public QMainWindow
 		void dialChanged(int value);
 		void pauseAcquisition();
 		void stopAcquisition();
+
+		void airPressureToggled(bool);
+		void airTemperatureToggled(bool);
+		void hailAccumulationToggled(bool);
+		void hailDurationToggled(bool);
+		void hailIntensity(bool);
+		void heatTemperatureToggled(bool);
+		void heatVoltageToggled(bool);
+		void rainAccumulationToggled(bool);
+		void rainDurationToggled(bool);
+		void rainIntensityToggled(bool);
+		void refVoltageToggled(bool);
+		void relativeHumidityToggled(bool);
+		void supplyVoltageToggled(bool);
+		void windDirectionAvrgToggled(bool);
+		void windSpeedAverageToggled(bool);
+		void analog1Toggled(bool);
+
+		void toggleAll(bool);
 };
 
 #endif // MAINWINDOW_H

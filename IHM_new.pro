@@ -13,6 +13,7 @@ QMAKE_CXXFLAGS +=   -std=c++11
 CONFIG += qwt
 CONFIG += extserialport
 
+include(/usr/local/qwt-6.1.0/features/qwt.prf)
 include(3rdparty/qextserialport/src/qextserialport.pri)
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
