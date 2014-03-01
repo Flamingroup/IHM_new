@@ -4,9 +4,6 @@
 #include <communication/serialport.h>
 #include <QMessageBox>
 #include <iostream>
-#include <QColorDialog>
-#include <QPalette>
-#include <sstream>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -40,6 +37,9 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
+/**
+ * @brief MainWindow::connections Constructeur de la fenêtre principale du logiciel
+ */
 void MainWindow::connections()
 {
 
@@ -92,11 +92,13 @@ void MainWindow::connections()
 	connect(ui->c_analog1, SIGNAL(toggled(bool)), this, SLOT(analog1Toggled(bool)));
 	connect(ui->c_all, SIGNAL(toggled(bool)), this, SLOT(toggleAll(bool)));
 
-	// timer
+	// timer --> Non lié car le com est un pointeur et faut null par défaut.
+	//           Solution possible, slot sendcommand dans this qui ne fait qu'appeler le sendcommand du com en vérifiant que le pointeur n'est pas null
 	connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
 
 	// Communication
 	connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunication()));
+}
 
 
 void MainWindow::createCommunicationSerie()
@@ -117,6 +119,11 @@ void MainWindow::createCommunicationSerie()
 
 void MainWindow::launchAcquisition()
 {
+
+	meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(10, 10);
+	meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(20, 50);
+	meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(30, 2);
+	meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(40, 10);
 	if (com == NULL || !com->isConfigured()){
 		// a remplacer par un create communication lorsqu'il sera créé
 		this->createCommunicationSerie();
@@ -127,13 +134,9 @@ void MainWindow::launchAcquisition()
 	}
 	if (timer.isActive())
 		return;
+	com->setCommand("00");
 	timer.start();
 	com->sendCommand();
-
-//	meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(10, 50);
-//	meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(20, 50);
-//	meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(30, 50);
-//	meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(40, 50);
 }
 
 void MainWindow::saveData()
@@ -173,65 +176,7 @@ void MainWindow::stopAcquisition()
 {
 	timer.stop();
 	if ( com != NULL)
-        com->unConfigure();
-}
-
-QPushButton *MainWindow::colorButtonWithFocus()
-{
-    if(ui->colorButtonX1->hasFocus())
-        return ui->colorButtonX1;
-    if(ui->colorButtonX2->hasFocus())
-        return ui->colorButtonX2;
-    if(ui->colorButtonX3->hasFocus())
-        return ui->colorButtonX3;
-    if(ui->colorButtonX4->hasFocus())
-        return ui->colorButtonX4;
-    if(ui->colorButtonX5->hasFocus())
-        return ui->colorButtonX5;
-    if(ui->colorButtonX6->hasFocus())
-        return ui->colorButtonX6;
-    if(ui->colorButtonX7->hasFocus())
-        return ui->colorButtonX7;
-    if(ui->colorButtonX8->hasFocus())
-        return ui->colorButtonX8;
-    if(ui->colorButtonX9->hasFocus())
-        return ui->colorButtonX9;
-    if(ui->colorButtonX10->hasFocus())
-        return ui->colorButtonX10;
-    if(ui->colorButtonX11->hasFocus())
-        return ui->colorButtonX11;
-    if(ui->colorButtonX12->hasFocus())
-        return ui->colorButtonX12;
-    if(ui->colorButtonX13->hasFocus())
-        return ui->colorButtonX13;
-    if(ui->colorButtonX14->hasFocus())
-        return ui->colorButtonX14;
-    if(ui->colorButtonX15->hasFocus())
-        return ui->colorButtonX15;
-    if(ui->colorButtonX16->hasFocus())
-        return ui->colorButtonX16;
-    return NULL;
-}
-
-void MainWindow::changeCurveColor()
-{
-    int r, g, b, buttonNum;
-    QColor newColor = QColorDialog::getColor(Qt::white,this);
-    QPushButton *focusedButton = colorButtonWithFocus();
-    string buttonName(focusedButton->objectName().toStdString()), junk, numString;
-    stringstream ns(buttonName);
-    getline(ns,junk,'X');
-    getline(ns,numString);
-    ns.flush();
-    ns>>buttonNum;
-    meteo.changeCurveColor(buttonNum, newColor);
-    r=newColor.red();
-    g=newColor.green();
-    b=newColor.blue();
-    ostringstream os;
-    os<<"background-color:rgb("<<r<<","<<g<<","<<b<<");color:rgb(255,255,255)";
-    focusedButton->setAutoFillBackground(true);
-    focusedButton->setStyleSheet(QString(os.str().c_str()));
+		com->unConfigure();
 }
 
 void MainWindow::changeCurveColor()
@@ -240,81 +185,113 @@ void MainWindow::changeCurveColor()
 	QPushButton* focusedButton;
 	if (ui->bc_airPressure->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->setColor(newColor);
 		focusedButton=ui->bc_airPressure;
 	}
 	else if (ui->bc_airTemperture->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->setColor(newColor);
 		focusedButton=ui->bc_airTemperture;
 	}
 	else if (ui->bc_analog1->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		analog1.setColor(newColor);
 		focusedButton=ui->bc_analog1;
 	}
 	else if (ui->bc_hailAccumulation->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation)->setColor(newColor);
 		focusedButton=ui->bc_hailAccumulation;
 	}
 	else if (ui->bc_hailDuration->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::hailDuration)->setColor(newColor);
 		focusedButton=ui->bc_hailDuration;
 	}
 	else if (ui->bc_hailIntensity->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity)->setColor(newColor);
 		focusedButton=ui->bc_hailIntensity;
 	}
 	else if (ui->bc_heatTemperature->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->setColor(newColor);
 		focusedButton=ui->bc_heatTemperature;
 	}
 	else if (ui->bc_heatVoltage->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->setColor(newColor);
 		focusedButton=ui->bc_heatVoltage;
 	}
 	else if (ui->bc_rainAccumulation->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->setColor(newColor);
 		focusedButton=ui->bc_rainAccumulation;
 	}
 	else if (ui->bc_rainDuration->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::rainDuration)->setColor(newColor);
 		focusedButton=ui->bc_rainDuration;
 	}
 	else if (ui->bc_rainIntensity->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity)->setColor(newColor);
 		focusedButton=ui->bc_rainIntensity;
 	}
 	else if (ui->bc_refVoltage->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->setColor(newColor);
 		focusedButton=ui->bc_refVoltage;
 	}
 	else if (ui->bc_relativeHumidity->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity)->setColor(newColor);
 		focusedButton=ui->bc_relativeHumidity;
 	}
 	else if (ui->bc_supplyVoltage->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->setColor(newColor);
 		focusedButton=ui->bc_supplyVoltage;
 	}
 	else if (ui->bc_windDirectionAvrg->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg)->setColor(newColor);
 		focusedButton=ui->bc_windDirectionAvrg;
 	}
 	else if (ui->bc_windSpeedAverage->hasFocus()){
 		newColor = QColorDialog::getColor(Qt::white,this);
+		if(!newColor.isValid())
+			return;
 		meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage)->setColor(newColor);
 		focusedButton=ui->bc_windSpeedAverage;
 	}
@@ -322,9 +299,7 @@ void MainWindow::changeCurveColor()
 		return;
 	}
 	focusedButton->setAutoFillBackground(true);
-	QString s("background-color:rgb("+ QString::number(newColor.red()) + ',' + QString::number(newColor.green()) + ',' + QString::number(newColor.blue()) + ");color:rgb(255,255,255)");
-	std::cout << s.toStdString() << std::endl;
-	focusedButton->setStyleSheet(s);
+	focusedButton->setStyleSheet(QString("background-color:rgb("+ QString::number(newColor.red()) + ',' + QString::number(newColor.green()) + ',' + QString::number(newColor.blue()) + ");color:rgb(255,255,255)"));
 }
 
 void MainWindow::airPressureToggled(bool ischecked)
@@ -602,4 +577,172 @@ void MainWindow::toggleAll(bool ischecked)
 	ui->c_windDirectionAvrg->setChecked(ischecked);
 	ui->c_windSpeedAverage->setChecked(ischecked);
 	ui->c_analog1->setChecked(ischecked);
+}
+
+void MainWindow::lireRetour()
+{
+	QString s (com->readAll());
+	double instant;
+	QStringList sl = s.split(';');
+	if (sl.first() == "0") {
+		sl.removeFirst();
+		instant = sl.first().toDouble();
+		sl.removeFirst();
+		QString str = sl.first().remove(0, 4);
+		QList<QList<QString*>*>* retour = ParseurRetour::parse(str);
+		QList<QList<QString*>*>::Iterator itRetour = retour->begin();
+		for (; itRetour!= retour->end(); ++itRetour){
+			QList<QString*>::Iterator itListe = (*itRetour)->begin();
+			while (itListe != (*itRetour)->end()){
+				if (**itListe == "Dm"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Sm"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Ta"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Ua"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Pa"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Rc"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Rd"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::rainDuration)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Ri"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Hc"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Hd"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::hailDuration)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Hi"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Th"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Vh"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Vs"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "Vr"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else if (**itListe == "A1"){
+					++itListe;
+					QString* valeur = *itListe;
+					++itListe;
+					// il faudrait uniformiser la valeur en fonction de l'unité
+					analog1.addValue(instant, valeur->toDouble());
+					++itListe;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		itRetour = retour->begin();
+		for (; itRetour!= retour->end(); ++itRetour){
+			QList<QString*>::Iterator itListe = (*itRetour)->begin();
+			for (; itListe != (*itRetour)->end(); ++itListe){
+				delete (*itListe);
+			}
+			delete *itRetour;
+		}
+		delete retour;
+	}
+	else if (sl.first() == "1"){
+		sl.removeFirst();
+		/** A lot of work to do **/
+	}
+	else if (sl.first() == "2"){
+		sl.removeFirst();
+		ui->te_answer->setText(sl.first());
+	}
 }
