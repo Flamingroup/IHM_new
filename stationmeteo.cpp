@@ -10,6 +10,7 @@ StationMeteo::StationMeteo(int idOrderMeteo)
 	t_or.push_back(new Order0R1);
 	t_or.push_back(new Order0R2);
 	t_or.push_back(new Order0R3);
+	t_or.push_back(nullptr);
 	t_or.push_back(new Order0R5);
 	for (char i = 0; i<15; ++i) {
 		t_capteursStation.push_back(new Capteur());

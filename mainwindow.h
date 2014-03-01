@@ -32,6 +32,8 @@ class MainWindow : public QMainWindow
 		QwtSimpleCompassRose *rose;
 		QwtCompassWindArrow *needle;
 		Capteur analog1;
+		int nbChecked = 0;
+		bool c_AllCheckedManually = false;
 
 	public slots:
 		void createCommunicationSerie();

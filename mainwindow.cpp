@@ -143,101 +143,264 @@ void MainWindow::stopAcquisition()
 
 void MainWindow::airPressureToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
+	std::cout << nbChecked << std::endl;
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::airPressure);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::airTemperatureToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::airTemperture);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::hailAccumulationToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::hailDurationToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::hailDuration);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::hailIntensity(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::heatTemperatureToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::heatVoltageToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::rainAccumulationToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::rainDurationToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::rainDuration);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::rainIntensityToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::refVoltageToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::refVoltage);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::relativeHumidityToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::supplyVoltageToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::windDirectionAvrgToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::windSpeedAverageToggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::analog1Toggled(bool ischecked)
 {
+	if (ischecked)
+		++nbChecked;
+	else --nbChecked;
+	if (nbChecked < 16){
+		c_AllCheckedManually = true;
+		ui->c_all->setChecked(false);
+		c_AllCheckedManually = false;
+	}
+	else if(nbChecked == 16)
+		ui->c_all->setChecked(true);
 	analog1.setVisible(ischecked);
 }
 
 void MainWindow::toggleAll(bool ischecked)
 {
+	if (c_AllCheckedManually)
+		return;
 	ui->c_airPressure->setChecked(ischecked);
 	ui->c_airTemperture->setChecked(ischecked);
 	ui->c_hailAccumulation->setChecked(ischecked);
