@@ -18,13 +18,13 @@ class SerialPort : public Communication
 	public:
 		SerialPort(QWidget* parent);
 		void configurer();
-		void sendCommand();
 		void startReading();
 		void stopReading();
 		QByteArray readAll();
 	public slots:
 		void onDataReceived();
 		void validateConfig();
+		void sendCommand();
 	signals:
 		void readyRead();
 };

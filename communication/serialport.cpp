@@ -22,7 +22,22 @@ void SerialPort::configurer()
 
 void SerialPort::sendCommand()
 {
-
+	if (!m_port->isOpen()) {
+		if(!m_port->open(QIODevice::ReadWrite))	{
+			QMessageBox::warning(0, "Error !", tr("Can't open port with specified settings !"));
+			return;
+		}
+		else {
+			connect(m_port, SIGNAL(readyRead()), this, SLOT(onDataReceived()));
+		}
+	}
+	if (!cmd.empty()) {
+		cmd.append("\n");
+		m_port->write(cmd.c_str());
+	}
+	else {
+		QMessageBox::warning(0, "Error !", tr("Problem, the command is empty"));
+	}
 }
 
 void SerialPort::startReading()
@@ -52,7 +67,7 @@ QByteArray SerialPort::readAll()
 
 void SerialPort::onDataReceived()
 {
-
+	emit readyRead();
 }
 
 void SerialPort::validateConfig()

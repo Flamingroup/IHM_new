@@ -19,3 +19,7 @@ Communication::Type Communication::getType()
 {
 	return type;
 }
+
+void Communication::setCommand(std::string command){
+	cmd=command;
+}
