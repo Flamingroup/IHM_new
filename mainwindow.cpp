@@ -4,14 +4,12 @@
 #include <communication/serialport.h>
 #include <QMessageBox>
 #include <iostream>
-#include <Q_INT32>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunication()));
 	// A connecter avec plot et non avec this
 	//connect(ui->m_clearCurve, SIGNAL(triggered()), this, SLOT(clearCurve()));
 	p_plot = new Plot();
@@ -22,39 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->dial_delai_acquisitionSpin->setMaximum(3600.00);
 	ui->dial_delai_acquisition->setMinimum(1);
 	ui->dial_delai_acquisition->setMaximum(36000);
-	connect(ui->b_play, SIGNAL(clicked()), this, SLOT(launchAcquisition()));
-	connect(ui->b_pause, SIGNAL(clicked()), this, SLOT(pauseAcquisition()));
-	connect(ui->b_arret, SIGNAL(clicked()), this, SLOT(stopAcquisition()));
-	connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunicationSerie()));
-	connect(ui->m_saveData, SIGNAL(triggered()), this, SLOT(saveData()));
-	connect(ui->m_loadData, SIGNAL(triggered()), this, SLOT(loadData()));
-	connect(ui->m_about, SIGNAL(triggered()), this, SLOT(about()));
-	connect(ui->m_aboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-	connect(ui->dial_delai_acquisitionSpin, SIGNAL(valueChanged(double)), this, SLOT(dialChangedSpin(double)));
-	connect(ui->dial_delai_acquisition, SIGNAL(valueChanged(int)), this, SLOT(dialChanged(int)));
 
-	connect(ui->c_airPressure, SIGNAL(toggled(bool)), this, SLOT(airPressureToggled(bool)));
-	connect(ui->c_airTemperture, SIGNAL(toggled(bool)), this, SLOT(airTemperatureToggled(bool)));
-	connect(ui->c_hailAccumulation, SIGNAL(toggled(bool)), this, SLOT(hailAccumulationToggled(bool)));
-	connect(ui->c_hailDuration, SIGNAL(toggled(bool)), this, SLOT(hailDurationToggled(bool)));
-	connect(ui->c_hailIntensity, SIGNAL(toggled(bool)), this, SLOT(hailIntensity(bool)));
-	connect(ui->c_heatTemperature, SIGNAL(toggled(bool)), this, SLOT(heatTemperatureToggled(bool)));
-	connect(ui->c_heatVoltage, SIGNAL(toggled(bool)), this, SLOT(heatVoltageToggled(bool)));
-	connect(ui->c_rainAccumulation, SIGNAL(toggled(bool)), this, SLOT(rainAccumulationToggled(bool)));
-	connect(ui->c_rainDuration, SIGNAL(toggled(bool)), this, SLOT(rainDurationToggled(bool)));
-	connect(ui->c_rainIntensity, SIGNAL(toggled(bool)), this, SLOT(rainIntensityToggled(bool)));
-	connect(ui->c_refVoltage, SIGNAL(toggled(bool)), this, SLOT(refVoltageToggled(bool)));
-	connect(ui->c_relativeHumidity, SIGNAL(toggled(bool)), this, SLOT(relativeHumidityToggled(bool)));
-	connect(ui->c_supplyVoltage, SIGNAL(toggled(bool)), this, SLOT(supplyVoltageToggled(bool)));
-	connect(ui->c_windDirectionAvrg, SIGNAL(toggled(bool)), this, SLOT(windDirectionAvrgToggled(bool)));
-	connect(ui->c_windSpeedAverage, SIGNAL(toggled(bool)), this, SLOT(windSpeedAverageToggled(bool)));
-
-	connect(ui->c_analog1, SIGNAL(toggled(bool)), this, SLOT(analog1Toggled(bool)));
-
-	connect(ui->c_all, SIGNAL(toggled(bool)), this, SLOT(toggleAll(bool)));
-	connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
-
-	connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
+	connections();
 
 	rose = new QwtSimpleCompassRose(16,2);
 	needle = new QwtCompassWindArrow(QwtCompassWindArrow::Style2,Qt::black,Qt::red);
@@ -70,13 +37,75 @@ MainWindow::~MainWindow()
 	delete ui;
 }
 
+void MainWindow::connections()
+{
+
+	//Color buttons
+	connect(ui->bc_airPressure, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_airTemperture, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_analog1, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_hailAccumulation, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_hailDuration, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_hailIntensity, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_heatTemperature, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_heatVoltage, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_rainAccumulation, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_rainDuration, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_rainIntensity, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_refVoltage, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_relativeHumidity, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_supplyVoltage, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_windDirectionAvrg, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+	connect(ui->bc_windSpeedAverage, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
+
+	//buttons and actions
+	connect(ui->b_play, SIGNAL(clicked()), this, SLOT(launchAcquisition()));
+	connect(ui->b_pause, SIGNAL(clicked()), this, SLOT(pauseAcquisition()));
+	connect(ui->b_arret, SIGNAL(clicked()), this, SLOT(stopAcquisition()));
+	connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunicationSerie()));
+	connect(ui->m_saveData, SIGNAL(triggered()), this, SLOT(saveData()));
+	connect(ui->m_loadData, SIGNAL(triggered()), this, SLOT(loadData()));
+	connect(ui->m_about, SIGNAL(triggered()), this, SLOT(about()));
+	connect(ui->m_aboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+	connect(ui->dial_delai_acquisitionSpin, SIGNAL(valueChanged(double)), this, SLOT(dialChangedSpin(double)));
+	connect(ui->dial_delai_acquisition, SIGNAL(valueChanged(int)), this, SLOT(dialChanged(int)));
+
+	//checkboxes
+	connect(ui->c_airPressure, SIGNAL(toggled(bool)), this, SLOT(airPressureToggled(bool)));
+	connect(ui->c_airTemperture, SIGNAL(toggled(bool)), this, SLOT(airTemperatureToggled(bool)));
+	connect(ui->c_hailAccumulation, SIGNAL(toggled(bool)), this, SLOT(hailAccumulationToggled(bool)));
+	connect(ui->c_hailDuration, SIGNAL(toggled(bool)), this, SLOT(hailDurationToggled(bool)));
+	connect(ui->c_hailIntensity, SIGNAL(toggled(bool)), this, SLOT(hailIntensity(bool)));
+	connect(ui->c_heatTemperature, SIGNAL(toggled(bool)), this, SLOT(heatTemperatureToggled(bool)));
+	connect(ui->c_heatVoltage, SIGNAL(toggled(bool)), this, SLOT(heatVoltageToggled(bool)));
+	connect(ui->c_rainAccumulation, SIGNAL(toggled(bool)), this, SLOT(rainAccumulationToggled(bool)));
+	connect(ui->c_rainDuration, SIGNAL(toggled(bool)), this, SLOT(rainDurationToggled(bool)));
+	connect(ui->c_rainIntensity, SIGNAL(toggled(bool)), this, SLOT(rainIntensityToggled(bool)));
+	connect(ui->c_refVoltage, SIGNAL(toggled(bool)), this, SLOT(refVoltageToggled(bool)));
+	connect(ui->c_relativeHumidity, SIGNAL(toggled(bool)), this, SLOT(relativeHumidityToggled(bool)));
+	connect(ui->c_supplyVoltage, SIGNAL(toggled(bool)), this, SLOT(supplyVoltageToggled(bool)));
+	connect(ui->c_windDirectionAvrg, SIGNAL(toggled(bool)), this, SLOT(windDirectionAvrgToggled(bool)));
+	connect(ui->c_windSpeedAverage, SIGNAL(toggled(bool)), this, SLOT(windSpeedAverageToggled(bool)));
+	connect(ui->c_analog1, SIGNAL(toggled(bool)), this, SLOT(analog1Toggled(bool)));
+	connect(ui->c_all, SIGNAL(toggled(bool)), this, SLOT(toggleAll(bool)));
+
+	// timer
+	connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
+
+	// Communication
+	connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunication()));
+}
+
 void MainWindow::createCommunicationSerie()
 {
-	if (com == NULL)
+	if (com == NULL) {
 		com = new SerialPort(this);
-	if (com->getType() != Communication::Type::Serie){
+		connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
+	}
+	else if (com->getType() != Communication::Type::Serie){
 		delete com;
 		com = new SerialPort(this);
+		connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
 	}
 	if (!com->isConfigured()){
 		com->configurer();
@@ -140,6 +169,99 @@ void MainWindow::stopAcquisition()
 		com->unConfigure();
 }
 
+void MainWindow::changeCurveColor()
+{
+	QColor newColor;
+	QPushButton* focusedButton;
+	if (ui->bc_airPressure->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->setColor(newColor);
+		focusedButton=ui->bc_airPressure;
+	}
+	else if (ui->bc_airTemperture->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->setColor(newColor);
+		focusedButton=ui->bc_airTemperture;
+	}
+	else if (ui->bc_analog1->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		analog1.setColor(newColor);
+		focusedButton=ui->bc_analog1;
+	}
+	else if (ui->bc_hailAccumulation->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation)->setColor(newColor);
+		focusedButton=ui->bc_hailAccumulation;
+	}
+	else if (ui->bc_hailDuration->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::hailDuration)->setColor(newColor);
+		focusedButton=ui->bc_hailDuration;
+	}
+	else if (ui->bc_hailIntensity->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity)->setColor(newColor);
+		focusedButton=ui->bc_hailIntensity;
+	}
+	else if (ui->bc_heatTemperature->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->setColor(newColor);
+		focusedButton=ui->bc_heatTemperature;
+	}
+	else if (ui->bc_heatVoltage->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->setColor(newColor);
+		focusedButton=ui->bc_heatVoltage;
+	}
+	else if (ui->bc_rainAccumulation->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->setColor(newColor);
+		focusedButton=ui->bc_rainAccumulation;
+	}
+	else if (ui->bc_rainDuration->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::rainDuration)->setColor(newColor);
+		focusedButton=ui->bc_rainDuration;
+	}
+	else if (ui->bc_rainIntensity->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity)->setColor(newColor);
+		focusedButton=ui->bc_rainIntensity;
+	}
+	else if (ui->bc_refVoltage->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->setColor(newColor);
+		focusedButton=ui->bc_refVoltage;
+	}
+	else if (ui->bc_relativeHumidity->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity)->setColor(newColor);
+		focusedButton=ui->bc_relativeHumidity;
+	}
+	else if (ui->bc_supplyVoltage->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->setColor(newColor);
+		focusedButton=ui->bc_supplyVoltage;
+	}
+	else if (ui->bc_windDirectionAvrg->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg)->setColor(newColor);
+		focusedButton=ui->bc_windDirectionAvrg;
+	}
+	else if (ui->bc_windSpeedAverage->hasFocus()){
+		newColor = QColorDialog::getColor(Qt::white,this);
+		meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage)->setColor(newColor);
+		focusedButton=ui->bc_windSpeedAverage;
+	}
+	else {
+		return;
+	}
+	focusedButton->setAutoFillBackground(true);
+	QString s("background-color:rgb("+ QString::number(newColor.red()) + ',' + QString::number(newColor.green()) + ',' + QString::number(newColor.blue()) + ");color:rgb(255,255,255)");
+	std::cout << s.toStdString() << std::endl;
+	focusedButton->setStyleSheet(s);
+}
+
 void MainWindow::airPressureToggled(bool ischecked)
 {
 	if (ischecked)
@@ -152,7 +274,6 @@ void MainWindow::airPressureToggled(bool ischecked)
 	}
 	else if(nbChecked == 16)
 		ui->c_all->setChecked(true);
-	std::cout << nbChecked << std::endl;
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::airPressure);
 	capt->setVisible(ischecked);
 }

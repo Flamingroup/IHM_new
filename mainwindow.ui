@@ -486,6 +486,214 @@
               </property>
              </widget>
             </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="bc_windDirectionAvrg">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QPushButton" name="bc_windSpeedAverage">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QPushButton" name="bc_airTemperture">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QPushButton" name="bc_relativeHumidity">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QPushButton" name="bc_airPressure">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QPushButton" name="bc_rainAccumulation">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="1">
+             <widget class="QPushButton" name="bc_rainDuration">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="1">
+             <widget class="QPushButton" name="bc_rainIntensity">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="1">
+             <widget class="QPushButton" name="bc_hailAccumulation">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="16" column="1">
+             <widget class="QPushButton" name="bc_hailDuration">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="17" column="1">
+             <widget class="QPushButton" name="bc_hailIntensity">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="18" column="1">
+             <widget class="QPushButton" name="bc_heatTemperature">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="20" column="1">
+             <widget class="QPushButton" name="bc_heatVoltage">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="21" column="1">
+             <widget class="QPushButton" name="bc_supplyVoltage">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="22" column="1">
+             <widget class="QPushButton" name="bc_refVoltage">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="23" column="1">
+             <widget class="QPushButton" name="bc_analog1">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
            </layout>
            <zorder>l_name</zorder>
            <zorder>l_value</zorder>
@@ -540,6 +748,22 @@
            <zorder>c_rainIntensity</zorder>
            <zorder>verticalSpacer_2</zorder>
            <zorder>c_all</zorder>
+           <zorder>bc_windDirectionAvrg</zorder>
+           <zorder>bc_windSpeedAverage</zorder>
+           <zorder>bc_airTemperture</zorder>
+           <zorder>bc_relativeHumidity</zorder>
+           <zorder>bc_airPressure</zorder>
+           <zorder>bc_rainAccumulation</zorder>
+           <zorder>bc_rainDuration</zorder>
+           <zorder>bc_rainIntensity</zorder>
+           <zorder>bc_hailAccumulation</zorder>
+           <zorder>bc_hailDuration</zorder>
+           <zorder>bc_hailIntensity</zorder>
+           <zorder>bc_heatTemperature</zorder>
+           <zorder>bc_heatVoltage</zorder>
+           <zorder>bc_supplyVoltage</zorder>
+           <zorder>bc_refVoltage</zorder>
+           <zorder>bc_analog1</zorder>
           </widget>
          </widget>
         </item>

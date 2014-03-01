@@ -36,6 +36,7 @@ class MainWindow : public QMainWindow
 		int nbChecked = 0;
 		bool c_AllCheckedManually = false;
 		ParseurRetour* p = NULL;
+		void connections();
 
 	public slots:
 		void createCommunicationSerie();
@@ -48,6 +49,8 @@ class MainWindow : public QMainWindow
 		void dialChanged(int value);
 		void pauseAcquisition();
 		void stopAcquisition();
+
+		void changeCurveColor();
 
 		/** Gestion des checkboxes **/
 		void airPressureToggled(bool);
