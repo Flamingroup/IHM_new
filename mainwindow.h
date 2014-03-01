@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <communication/communication.h>
-#include <parseurs/retour/parseurretour.h>
 #include <plot.h>
 #include <stationmeteo.h>
 #include <capteurs/capteur.h>
@@ -69,10 +68,8 @@ class MainWindow : public QMainWindow
 		void windDirectionAvrgToggled(bool);
 		void windSpeedAverageToggled(bool);
 		void analog1Toggled(bool);
+
 		void toggleAll(bool);
-
-
-		void lireRetour();
 };
 
 #endif // MAINWINDOW_H

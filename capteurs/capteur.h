@@ -15,6 +15,7 @@ class Capteur : public QObject
 	public:
 		Capteur();
 		void addValue(double instantMesure, double value);
+        QColor getColor();
 		void setColor(QColor nColor);
 		void setVisible(bool b);
 		void setPlot(QwtPlot* plot);
