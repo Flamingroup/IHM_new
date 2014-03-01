@@ -45,7 +45,7 @@
              <x>0</x>
              <y>0</y>
              <width>498</width>
-             <height>602</height>
+             <height>615</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
@@ -486,6 +486,214 @@
               </property>
              </widget>
             </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="colorButtonX13">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QPushButton" name="colorButtonX14">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QPushButton" name="colorButtonX1">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QPushButton" name="colorButtonX11">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QPushButton" name="colorButtonX15">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QPushButton" name="colorButtonX7">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="1">
+             <widget class="QPushButton" name="colorButtonX8">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="1">
+             <widget class="QPushButton" name="colorButtonX9">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="1">
+             <widget class="QPushButton" name="colorButtonX2">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="16" column="1">
+             <widget class="QPushButton" name="colorButtonX3">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="17" column="1">
+             <widget class="QPushButton" name="colorButtonX4">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="18" column="1">
+             <widget class="QPushButton" name="colorButtonX5">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="20" column="1">
+             <widget class="QPushButton" name="colorButtonX6">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="21" column="1">
+             <widget class="QPushButton" name="colorButtonX12">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="22" column="1">
+             <widget class="QPushButton" name="colorButtonX10">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="23" column="1">
+             <widget class="QPushButton" name="colorButtonX16">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
            </layout>
            <zorder>l_name</zorder>
            <zorder>l_value</zorder>
@@ -540,6 +748,22 @@
            <zorder>c_rainIntensity</zorder>
            <zorder>verticalSpacer_2</zorder>
            <zorder>c_all</zorder>
+           <zorder>colorButtonX13</zorder>
+           <zorder>colorButtonX14</zorder>
+           <zorder>colorButtonX1</zorder>
+           <zorder>colorButtonX11</zorder>
+           <zorder>colorButtonX15</zorder>
+           <zorder>colorButtonX7</zorder>
+           <zorder>colorButtonX8</zorder>
+           <zorder>colorButtonX9</zorder>
+           <zorder>colorButtonX2</zorder>
+           <zorder>colorButtonX3</zorder>
+           <zorder>colorButtonX4</zorder>
+           <zorder>colorButtonX5</zorder>
+           <zorder>colorButtonX6</zorder>
+           <zorder>colorButtonX12</zorder>
+           <zorder>colorButtonX10</zorder>
+           <zorder>colorButtonX16</zorder>
           </widget>
          </widget>
         </item>
@@ -579,7 +803,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="te_answer">
+          <widget class="QTextEdit" name="textEdit">
            <property name="readOnly">
             <bool>true</bool>
            </property>
@@ -615,8 +839,8 @@
           <widget class="QDial" name="dial_delai_acquisition"/>
          </item>
          <item row="6" column="0">
-          <widget class="QwtCompass" name="Compass">
-           <property name="lineWidth">
+          <widget class="QwtCompass" name="Compass" native="true">
+           <property name="lineWidth" stdset="0">
             <number>4</number>
            </property>
           </widget>
@@ -708,7 +932,7 @@
      <x>0</x>
      <y>0</y>
      <width>1491</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConfiguration_port_s_rie">
@@ -790,14 +1014,14 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QwtCompass</class>
-   <extends>QwtDial</extends>
-   <header>qwt_compass.h</header>
-  </customwidget>
-  <customwidget>
    <class>QwtDial</class>
    <extends>QWidget</extends>
    <header>qwt_dial.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtCompass</class>
+   <extends>QwtDial</extends>
+   <header>qwt_compass.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

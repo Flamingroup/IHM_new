@@ -1,17 +1,19 @@
 #ifndef STATIONMETEO_H
 #define STATIONMETEO_H
 #include <vector>
+#include <ordermeteostation/ordermeteostation.h>
 #include <capteurs/capteur.h>
 #include <string>
 
 class StationMeteo
 {
 	private:
+		std::vector<OrderMeteoStation*> t_or;
 		std::vector<Capteur*> t_capteursStation;
 		int idOrderMeteo;
 	public:
 		enum TypeCapteur{
-			airPressure=0,
+            airPressure=15,
 			airTemperture=1,
 			hailAccumulation=2,
 			hailDuration=3,
@@ -32,6 +34,7 @@ class StationMeteo
 		std::string getOrderStation();
 		Capteur* getCapt(TypeCapteur t);
 		void setPlot(QwtPlot* plot);
+        void changeCurveColor(int nocapt, QColor newColor);
 };
 
 #endif // STATIONMETEO_H

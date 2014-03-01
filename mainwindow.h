@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <communication/communication.h>
-#include <parseurs/retour/parseurretour.h>
 #include <plot.h>
 #include <stationmeteo.h>
 #include <capteurs/capteur.h>
@@ -35,7 +34,9 @@ class MainWindow : public QMainWindow
 		Capteur analog1;
 		int nbChecked = 0;
 		bool c_AllCheckedManually = false;
-		ParseurRetour* p = NULL;
+
+        void connections(void);
+        QPushButton* colorButtonWithFocus();
 
 	public slots:
 		void createCommunicationSerie();
@@ -49,7 +50,8 @@ class MainWindow : public QMainWindow
 		void pauseAcquisition();
 		void stopAcquisition();
 
-		/** Gestion des checkboxes **/
+        void changeCurveColor();
+
 		void airPressureToggled(bool);
 		void airTemperatureToggled(bool);
 		void hailAccumulationToggled(bool);
@@ -66,10 +68,8 @@ class MainWindow : public QMainWindow
 		void windDirectionAvrgToggled(bool);
 		void windSpeedAverageToggled(bool);
 		void analog1Toggled(bool);
+
 		void toggleAll(bool);
-
-
-		void lireRetour();
 };
 
 #endif // MAINWINDOW_H

@@ -7,14 +7,19 @@ Capteur::Capteur()
 void Capteur::addValue(double instantMesure, double value)
 {
 	times.append(QPointF(instantMesure, value));
-	curve.setSamples(times);
+    curve.setSamples(times);
+}
+
+QColor Capteur::getColor()
+{
+    return color;
 }
 
 void Capteur::setColor(QColor nColor)
 {
 	color=nColor;
 	QPen pen = curve.pen();
-	pen.setColor(color);
+    pen.setColor(color);
 	curve.setPen(pen);
 }
 
