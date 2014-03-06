@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     parseurs/retour/parseurretour.cpp \
     capteurs/capteur.cpp \
     stationmeteo.cpp \
-    plot.cpp
+    plot.cpp \
+    convertisseur.cpp
 
 HEADERS  += mainwindow.h \
     communication/communication.h \
@@ -37,6 +38,7 @@ HEADERS  += mainwindow.h \
     parseurs/retour/parseurretour.h \
     capteurs/capteur.h \
     stationmeteo.h \
-    plot.h
+    plot.h \
+    convertisseur.hpp
 
 FORMS    += mainwindow.ui

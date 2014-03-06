@@ -10,8 +10,6 @@ ParseurRetour::ParseurRetour()
 */
 
 QList< QList<QString*>* >* ParseurRetour::parse(QString str){
-	str.remove(str.size()-1, 1);
-	str.remove(str.size()-1, 1);
 	QList<QList<QString*>*>* retour = new QList< QList<QString*>* >();
 	QString* car;
 	QStringList strlist = str.split(',');

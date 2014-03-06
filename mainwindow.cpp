@@ -1,9 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <convertisseur.hpp>
 
 #include <communication/serialport.h>
 #include <QMessageBox>
 #include <iostream>
+
+using std::cout;
+using std::endl;
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -22,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->dial_delai_acquisition->setMaximum(36000);
 
 	connections();
+	defaultButtonColor();
 
 	rose = new QwtSimpleCompassRose(16,2);
 	needle = new QwtCompassWindArrow(QwtCompassWindArrow::Style2,Qt::black,Qt::red);
@@ -100,6 +105,24 @@ void MainWindow::connections()
 	connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunication()));
 }
 
+void MainWindow::defaultButtonColor(){
+	ui->bc_airPressure->setStyleSheet("background-color:black");
+	ui->bc_airTemperture->setStyleSheet("background-color:black");
+	ui->bc_analog1->setStyleSheet("background-color:black");
+	ui->bc_hailAccumulation->setStyleSheet("background-color:black");
+	ui->bc_hailDuration->setStyleSheet("background-color:black");
+	ui->bc_hailIntensity->setStyleSheet("background-color:black");
+	ui->bc_heatTemperature->setStyleSheet("background-color:black");
+	ui->bc_heatVoltage->setStyleSheet("background-color:black");
+	ui->bc_rainAccumulation->setStyleSheet("background-color:black");
+	ui->bc_rainDuration->setStyleSheet("background-color:black");
+	ui->bc_rainIntensity->setStyleSheet("background-color:black");
+	ui->bc_refVoltage->setStyleSheet("background-color:black");
+	ui->bc_relativeHumidity->setStyleSheet("background-color:black");
+	ui->bc_supplyVoltage->setStyleSheet("background-color:black");
+	ui->bc_windDirectionAvrg->setStyleSheet("background-color:black");
+	ui->bc_windSpeedAverage->setStyleSheet("background-color:black");
+}
 
 void MainWindow::createCommunicationSerie()
 {
@@ -581,161 +604,164 @@ void MainWindow::toggleAll(bool ischecked)
 
 void MainWindow::lireRetour()
 {
-	QString s (com->readAll());
-	double instant;
+//	QString s (com->readAll());
+	QString s = "0;20;2000;0R1,Dm=027D,Sm=0.1M\r\n0R2,Ta=74.6F,Ua=14.7P,Pa=1012.9H\r\n0R3,Rc=0.10M,Rd=2380s,Ri=0.0M,Hc=0.0M,Hd=0s,Hi=0.0M\r\n0R5,Th=76.1F,Vh=11.5N,Vs=11.5V,Vr=3.510V\r\n";
+	double instant, analog1value;
 	QStringList sl = s.split(';');
+	cout << sl.size() << endl;
 	if (sl.first() == "0") {
 		sl.removeFirst();
 		instant = sl.first().toDouble();
+		cout << "instant " << instant << endl;
 		sl.removeFirst();
-		QString str = sl.first().remove(0, 4);
-		QList<QList<QString*>*>* retour = ParseurRetour::parse(str);
-		QList<QList<QString*>*>::Iterator itRetour = retour->begin();
-		for (; itRetour!= retour->end(); ++itRetour){
-			QList<QString*>::Iterator itListe = (*itRetour)->begin();
-			while (itListe != (*itRetour)->end()){
-				if (**itListe == "Dm"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Sm"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Ta"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Ua"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Pa"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Rc"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Rd"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::rainDuration)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Ri"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Hc"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Hd"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::hailDuration)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Hi"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Th"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Vh"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Vs"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "Vr"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else if (**itListe == "A1"){
-					++itListe;
-					QString* valeur = *itListe;
-					++itListe;
-					// il faudrait uniformiser la valeur en fonction de l'unité
-					analog1.addValue(instant, valeur->toDouble());
-					++itListe;
-				}
-				else {
-					break;
+		analog1value = sl.first().toDouble();
+//		analog1.addValue(instant, analog1value);
+		cout << "valeur analogique " << analog1value << endl;
+		sl.removeFirst();
+		for (QString i : sl.first().split("\r\n", QString::SkipEmptyParts)){
+			QString str = i.remove(0, 4);
+			QList<QList<QString*>*>* retour = ParseurRetour::parse(str);
+			QList<QList<QString*>*>::Iterator itRetour = retour->begin();
+			for (; itRetour!= retour->end(); ++itRetour){
+				QList<QString*>::Iterator itListe = (*itRetour)->begin();
+				while (itListe != (*itRetour)->end()){
+					if (**itListe == "Dm"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() <<endl;
+						//meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg)->addValue(instant, valeur->toDouble());
+						//ui->v_windDirectionAvrg->setText(*valeur);
+						++itListe;
+					}
+					else if (**itListe == "Sm"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+						//meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage)->addValue(instant, Convertisseur::convertSpeed(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')) ;
+						//ui->v_windSpeedAverage->setText(QString::number(Convertisseur::convertSpeed(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')));
+						++itListe;
+					}
+					else if (**itListe == "Ta"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C'));
+						++itListe;
+					}
+					else if (**itListe == "Ua"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity)->addValue(instant, valeur->toDouble());
+						++itListe;
+					}
+					else if (**itListe == "Pa"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(instant, Convertisseur::convertPression(valeur->toDouble(), (*itListe)->toStdString()[0], 'P'));
+						++itListe;
+					}
+					else if (**itListe == "Rc"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->addValue(instant, valeur->toDouble());
+						++itListe;
+					}
+					else if (**itListe == "Rd"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::rainDuration)->addValue(instant, valeur->toDouble());
+						++itListe;
+					}
+					else if (**itListe == "Ri"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity)->addValue(instant, valeur->toDouble());
+						++itListe;
+					}
+					else if (**itListe == "Hc"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation)->addValue(instant, Convertisseur::convertHail(valeur->toDouble(), (*itListe)->toStdString()[0], 'M'));
+						++itListe;
+					}
+					else if (**itListe == "Hd"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::hailDuration)->addValue(instant, valeur->toDouble());
+						++itListe;
+					}
+					else if (**itListe == "Hi"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity)->addValue(instant, valeur->toDouble());
+						++itListe;
+					}
+					else if (**itListe == "Th"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C'));
+						++itListe;
+					}
+					else if (**itListe == "Vh"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->addValue(instant, valeur->toDouble());
+						++itListe;
+					}
+					else if (**itListe == "Vs"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->addValue(instant, valeur->toDouble());
+						++itListe;
+					}
+					else if (**itListe == "Vr"){
+						++itListe;
+						QString* valeur = *itListe;
+						++itListe;
+						cout << instant << "*" << valeur->toDouble() << endl;
+//						meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->addValue(instant, valeur->toDouble());
+						++itListe;
+					}
+					else {
+						break;
+					}
 				}
 			}
-		}
-		itRetour = retour->begin();
-		for (; itRetour!= retour->end(); ++itRetour){
-			QList<QString*>::Iterator itListe = (*itRetour)->begin();
-			for (; itListe != (*itRetour)->end(); ++itListe){
-				delete (*itListe);
+			itRetour = retour->begin();
+			for (; itRetour!= retour->end(); ++itRetour){
+				QList<QString*>::Iterator itListe = (*itRetour)->begin();
+				for (; itListe != (*itRetour)->end(); ++itListe){
+					delete (*itListe);
+				}
+				delete *itRetour;
 			}
-			delete *itRetour;
+			delete retour;
 		}
-		delete retour;
 	}
 	else if (sl.first() == "1"){
 		sl.removeFirst();
@@ -743,6 +769,7 @@ void MainWindow::lireRetour()
 	}
 	else if (sl.first() == "2"){
 		sl.removeFirst();
-		ui->te_answer->setText(sl.first());
+//		ui->te_answer->setText(sl.first());
+		cout << sl.first().toStdString() << endl;
 	}
 }
