@@ -13,10 +13,10 @@ QList< QList<QString*>* >* ParseurRetour::parse(QString str){
     QList<QList<QString*>*>* retour = new QList< QList<QString*>* >(); // auto * ?
 	QString* car;
 	QStringList strlist = str.split(',');
-    auto it = strlist.begin();
-	int i=0;
-	for (; it != strlist.end(); ++it, ++i){
-		int lastCharPos=0;
+
+    int lastCharPos;
+    for (auto it = strlist.begin(); it != strlist.end(); ++it){
+        lastCharPos=0;
 		QStringList nomEValeur = it->split('=');
 		retour->push_back(new QList<QString*>);
 		retour->last()->push_back(new QString(nomEValeur[0]));

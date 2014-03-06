@@ -146,7 +146,6 @@ void MainWindow::launchAcquisition()
     meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(20, 50);
     meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(30, 2);
     meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(40, 10);
-    lireRetour(); // TEMPORARY
     if (com == NULL || !com->isConfigured()){
         // a remplacer par un create communication lorsqu'il sera créé
         this->createCommunicationSerie();
@@ -176,7 +175,7 @@ void MainWindow::loadData()
 
 void MainWindow::about()
 {
-    QMessageBox::warning(0, "About", "Programme créé par Yan, Raphaël, Ayemeric et Loïc");
+    QMessageBox::warning(0, "About", "Programme cree par Yann, Raphael, Aymeric et Loic");
 }
 
 void MainWindow::dialChangedSpin(double value)
@@ -204,7 +203,6 @@ void MainWindow::stopAcquisition()
     if ( com != NULL)
         com->unConfigure();
     ui->l_acquState->setText("Pas d'acquistion en cours");
-
 }
 
 void MainWindow::changeCurveColor()
