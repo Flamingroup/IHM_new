@@ -39,6 +39,8 @@ class MainWindow : public QMainWindow
 		void connections();
 		void defaultButtonColor();
 
+        void toggleChanged(bool ischecked);
+
 	public slots:
 		void createCommunicationSerie();
 		void launchAcquisition();

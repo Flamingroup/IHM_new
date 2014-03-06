@@ -106,22 +106,23 @@ void MainWindow::connections()
 }
 
 void MainWindow::defaultButtonColor(){
-	ui->bc_airPressure->setStyleSheet("background-color:black");
-	ui->bc_airTemperture->setStyleSheet("background-color:black");
-	ui->bc_analog1->setStyleSheet("background-color:black");
-	ui->bc_hailAccumulation->setStyleSheet("background-color:black");
-	ui->bc_hailDuration->setStyleSheet("background-color:black");
-	ui->bc_hailIntensity->setStyleSheet("background-color:black");
-	ui->bc_heatTemperature->setStyleSheet("background-color:black");
-	ui->bc_heatVoltage->setStyleSheet("background-color:black");
+    ui->bc_windDirectionAvrg->setStyleSheet("background-color:brown");
+    ui->bc_windSpeedAverage->setStyleSheet("background-color:black");
+    ui->bc_airTemperture->setStyleSheet("background-color:silver");
+    ui->bc_relativeHumidity->setStyleSheet("background-color:gray");
+    ui->bc_airPressure->setStyleSheet("background-color:blue");
 	ui->bc_rainAccumulation->setStyleSheet("background-color:black");
 	ui->bc_rainDuration->setStyleSheet("background-color:black");
-	ui->bc_rainIntensity->setStyleSheet("background-color:black");
+    ui->bc_rainIntensity->setStyleSheet("background-color:purple");
+    ui->bc_hailAccumulation->setStyleSheet("background-color:green");
+    ui->bc_hailDuration->setStyleSheet("background-color:red");
+    ui->bc_hailIntensity->setStyleSheet("background-color:black");
+    ui->bc_heatTemperature->setStyleSheet("background-color:orange");
+    ui->bc_heatVoltage->setStyleSheet("background-color:pink");
+    ui->bc_supplyVoltage->setStyleSheet("background-color:yellow");
 	ui->bc_refVoltage->setStyleSheet("background-color:black");
-	ui->bc_relativeHumidity->setStyleSheet("background-color:black");
-	ui->bc_supplyVoltage->setStyleSheet("background-color:black");
-	ui->bc_windDirectionAvrg->setStyleSheet("background-color:black");
-	ui->bc_windSpeedAverage->setStyleSheet("background-color:black");
+    ui->bc_analog1->setStyleSheet("background-color:violet");
+
 }
 
 void MainWindow::createCommunicationSerie()
@@ -325,258 +326,127 @@ void MainWindow::changeCurveColor()
 	focusedButton->setStyleSheet(QString("background-color:rgb("+ QString::number(newColor.red()) + ',' + QString::number(newColor.green()) + ',' + QString::number(newColor.blue()) + ");color:rgb(255,255,255)"));
 }
 
+void MainWindow::toggleChanged(bool ischecked)
+{
+    if (ischecked)	++nbChecked;
+    else --nbChecked;
+
+    if (nbChecked < 16){
+        c_AllCheckedManually = true;
+        ui->c_all->setChecked(false);
+        c_AllCheckedManually = false;
+    }
+    else if(nbChecked == 16) ui->c_all->setChecked(true);
+}
+
 void MainWindow::airPressureToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::airPressure);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::airTemperatureToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::airTemperture);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::hailAccumulationToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::hailDurationToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::hailDuration);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::hailIntensity(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::heatTemperatureToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::heatVoltageToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::rainAccumulationToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::rainDurationToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::rainDuration);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::rainIntensityToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::refVoltageToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::refVoltage);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::relativeHumidityToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::supplyVoltageToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::windDirectionAvrgToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);;
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::windSpeedAverageToggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage);
 	capt->setVisible(ischecked);
 }
 
 void MainWindow::analog1Toggled(bool ischecked)
 {
-	if (ischecked)
-		++nbChecked;
-	else --nbChecked;
-	if (nbChecked < 16){
-		c_AllCheckedManually = true;
-		ui->c_all->setChecked(false);
-		c_AllCheckedManually = false;
-	}
-	else if(nbChecked == 16)
-		ui->c_all->setChecked(true);
+    toggleChanged(ischecked);
 	analog1.setVisible(ischecked);
 }
 
@@ -618,12 +488,12 @@ void MainWindow::lireRetour()
 //		analog1.addValue(instant, analog1value);
 		cout << "valeur analogique " << analog1value << endl;
 		sl.removeFirst();
-		for (QString i : sl.first().split("\r\n", QString::SkipEmptyParts)){
+        for (QString i : sl.first().split("\r\n", QString::SkipEmptyParts)) {
 			QString str = i.remove(0, 4);
-			QList<QList<QString*>*>* retour = ParseurRetour::parse(str);
-			QList<QList<QString*>*>::Iterator itRetour = retour->begin();
+            QList<QList<QString*>*>* retour = ParseurRetour::parse(str);
+            auto itRetour = retour->begin();
 			for (; itRetour!= retour->end(); ++itRetour){
-				QList<QString*>::Iterator itListe = (*itRetour)->begin();
+                auto itListe = (*itRetour)->begin();
 				while (itListe != (*itRetour)->end()){
 					if (**itListe == "Dm"){
 						++itListe;
@@ -754,7 +624,7 @@ void MainWindow::lireRetour()
 			}
 			itRetour = retour->begin();
 			for (; itRetour!= retour->end(); ++itRetour){
-				QList<QString*>::Iterator itListe = (*itRetour)->begin();
+                auto itListe = (*itRetour)->begin();
 				for (; itListe != (*itRetour)->end(); ++itListe){
 					delete (*itListe);
 				}

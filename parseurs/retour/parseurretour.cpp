@@ -10,10 +10,10 @@ ParseurRetour::ParseurRetour()
 */
 
 QList< QList<QString*>* >* ParseurRetour::parse(QString str){
-	QList<QList<QString*>*>* retour = new QList< QList<QString*>* >();
+    QList<QList<QString*>*>* retour = new QList< QList<QString*>* >(); // auto * ?
 	QString* car;
 	QStringList strlist = str.split(',');
-	QStringList::Iterator it = strlist.begin();
+    auto it = strlist.begin();
 	int i=0;
 	for (; it != strlist.end(); ++it, ++i){
 		int lastCharPos=0;
