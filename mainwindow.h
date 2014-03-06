@@ -41,6 +41,7 @@ class MainWindow : public QMainWindow
 
         void toggleChanged(bool ischecked);
 
+
 	public slots:
 		void createCommunicationSerie();
 		void launchAcquisition();
