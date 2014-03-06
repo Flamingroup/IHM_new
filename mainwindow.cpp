@@ -26,8 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->dial_delai_acquisition->setMaximum(36000);
 
 	connections();
-	defaultButtonColor();
-
+    defaultButtonColor();
 	rose = new QwtSimpleCompassRose(16,2);
 	needle = new QwtCompassWindArrow(QwtCompassWindArrow::Style2,Qt::black,Qt::red);
 	ui->Compass->setValue(180);
@@ -106,23 +105,99 @@ void MainWindow::connections()
 }
 
 void MainWindow::defaultButtonColor(){
-	ui->bc_airPressure->setStyleSheet("background-color:black");
-	ui->bc_airTemperture->setStyleSheet("background-color:black");
-	ui->bc_analog1->setStyleSheet("background-color:black");
-	ui->bc_hailAccumulation->setStyleSheet("background-color:black");
-	ui->bc_hailDuration->setStyleSheet("background-color:black");
-	ui->bc_hailIntensity->setStyleSheet("background-color:black");
-	ui->bc_heatTemperature->setStyleSheet("background-color:black");
-	ui->bc_heatVoltage->setStyleSheet("background-color:black");
-	ui->bc_rainAccumulation->setStyleSheet("background-color:black");
-	ui->bc_rainDuration->setStyleSheet("background-color:black");
-	ui->bc_rainIntensity->setStyleSheet("background-color:black");
-	ui->bc_refVoltage->setStyleSheet("background-color:black");
-	ui->bc_relativeHumidity->setStyleSheet("background-color:black");
-	ui->bc_supplyVoltage->setStyleSheet("background-color:black");
-	ui->bc_windDirectionAvrg->setStyleSheet("background-color:black");
-	ui->bc_windSpeedAverage->setStyleSheet("background-color:black");
+    QColor c=meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->getColor();
+    ui->bc_airPressure->setStyleSheet(QString("background-color:rgb("+
+                                              QString::number(c.red()) +
+                                              ',' + QString::number(c.green()) +
+                                              ',' + QString::number(c.blue()) +
+                                              ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->getColor();
+    ui->bc_airTemperture->setStyleSheet(QString("background-color:rgb("+
+                                                QString::number(c.red()) +
+                                                ',' + QString::number(c.green()) +
+                                                ',' + QString::number(c.blue()) +
+                                                ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation)->getColor();
+    ui->bc_hailAccumulation->setStyleSheet(QString("background-color:rgb("+
+                                                   QString::number(c.red()) +
+                                                   ',' + QString::number(c.green()) +
+                                                   ',' + QString::number(c.blue()) +
+                                                   ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::hailDuration)->getColor();
+    ui->bc_hailDuration->setStyleSheet(QString("background-color:rgb("+
+                                               QString::number(c.red()) +
+                                               ',' + QString::number(c.green()) +
+                                               ',' + QString::number(c.blue()) +
+                                               ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity)->getColor();
+    ui->bc_hailIntensity->setStyleSheet(QString("background-color:rgb("+
+                                                QString::number(c.red()) +
+                                                ',' + QString::number(c.green()) +
+                                                ',' + QString::number(c.blue()) +
+                                                ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->getColor();
+    ui->bc_heatTemperature->setStyleSheet(QString("background-color:rgb("+
+                                                  QString::number(c.red()) +
+                                                  ',' + QString::number(c.green()) +
+                                                  ',' + QString::number(c.blue()) +
+                                                  ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->getColor();
+    ui->bc_heatVoltage->setStyleSheet(QString("background-color:rgb("+
+                                              QString::number(c.red()) +
+                                              ',' + QString::number(c.green()) +
+                                              ',' + QString::number(c.blue()) +
+                                              ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->getColor();
+    ui->bc_rainAccumulation->setStyleSheet(QString("background-color:rgb("+
+                                                   QString::number(c.red()) +
+                                                   ',' + QString::number(c.green()) +
+                                                   ',' + QString::number(c.blue()) +
+                                                   ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::rainDuration)->getColor();
+    ui->bc_rainDuration->setStyleSheet(QString("background-color:rgb("+
+                                               QString::number(c.red()) +
+                                               ',' + QString::number(c.green()) +
+                                               ',' + QString::number(c.blue()) +
+                                               ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity)->getColor();
+    ui->bc_rainIntensity->setStyleSheet(QString("background-color:rgb("+
+                                                QString::number(c.red()) +
+                                                ',' + QString::number(c.green()) +
+                                                ',' + QString::number(c.blue()) +
+                                                ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->getColor();
+    ui->bc_refVoltage->setStyleSheet(QString("background-color:rgb("+
+                                             QString::number(c.red()) +
+                                             ',' + QString::number(c.green()) +
+                                             ',' + QString::number(c.blue()) +
+                                             ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity)->getColor();
+    ui->bc_relativeHumidity->setStyleSheet(QString("background-color:rgb("+
+                                                   QString::number(c.red()) +
+                                                   ',' + QString::number(c.green()) +
+                                                   ',' + QString::number(c.blue()) +
+                                                   ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->getColor();
+    ui->bc_supplyVoltage->setStyleSheet(QString("background-color:rgb("+
+                                                QString::number(c.red()) +
+                                                ',' + QString::number(c.green()) +
+                                                ',' + QString::number(c.blue()) +
+                                                ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg)->getColor();
+    ui->bc_windDirectionAvrg->setStyleSheet(QString("background-color:rgb("+
+                                                    QString::number(c.red()) +
+                                                    ',' + QString::number(c.green()) +
+                                                    ',' + QString::number(c.blue()) +
+                                                    ");color:rgb(255,255,255)"));
+    c=meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage)->getColor();
+    ui->bc_windSpeedAverage->setStyleSheet(QString("background-color:rgb("+
+                                                   QString::number(c.red()) +
+                                                   ',' + QString::number(c.green()) +
+                                                   ',' + QString::number(c.blue()) +
+                                                   ");color:rgb(255,255,255)"));
+    ui->bc_analog1->setStyleSheet("background-color:black");
 }
+
 
 void MainWindow::createCommunicationSerie()
 {

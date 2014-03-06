@@ -44,8 +44,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>498</width>
-             <height>602</height>
+             <width>496</width>
+             <height>605</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
@@ -932,7 +932,7 @@
      <x>0</x>
      <y>0</y>
      <width>1491</width>
-     <height>27</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConfiguration_port_s_rie">

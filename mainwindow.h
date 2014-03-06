@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow
 		bool c_AllCheckedManually = false;
 		ParseurRetour* p = NULL;
 		void connections();
-		void defaultButtonColor();
+        void defaultButtonColor();
 
 	public slots:
 		void createCommunicationSerie();

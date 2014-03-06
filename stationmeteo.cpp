@@ -5,7 +5,12 @@ StationMeteo::StationMeteo(int idOrderMeteo)
 {
 	for (char i = 0; i<15; ++i) {
 		t_capteursStation.push_back(new Capteur());
+        //default colors
+        t_capteursStation[i]->setColor(default_c[i]);
 		t_capteursStation[i]->setVisible(false);
+        //test values
+        t_capteursStation[i]->addValue(5,2*i);
+        t_capteursStation[i]->addValue(20,3*i);
 	}
 
 }
