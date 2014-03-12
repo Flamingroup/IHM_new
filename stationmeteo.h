@@ -4,6 +4,7 @@
 #include <capteurs/capteur.h>
 #include <string>
 
+
 class StationMeteo
 {
 	private:
@@ -49,6 +50,8 @@ class StationMeteo
 		std::string getOrderStation();
 		Capteur* getCapt(TypeCapteur t);
         void setPlot(QwtPlot* plot);
+		void saveData(std::ofstream& stream);
+		int size();
 };
 
 #endif // STATIONMETEO_H

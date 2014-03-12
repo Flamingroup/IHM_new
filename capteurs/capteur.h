@@ -5,6 +5,8 @@
 #include <qwt_plot_curve.h>
 #include <QObject>
 
+using std::ostream;
+
 class Capteur : public QObject
 {
 	private:
@@ -20,6 +22,7 @@ class Capteur : public QObject
 		void setVisible(bool b);
 		void setPlot(QwtPlot* plot);
 		bool isAttached();
+		QVector<QPointF>& getTimes();
 		~Capteur();
 };
 

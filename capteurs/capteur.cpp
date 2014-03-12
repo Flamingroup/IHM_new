@@ -39,6 +39,11 @@ bool Capteur::isAttached()
 	return attached;
 }
 
+QVector<QPointF>& Capteur::getTimes()
+{
+	return times;
+}
+
 Capteur::~Capteur()
 {
 	if (isAttached()){

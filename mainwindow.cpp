@@ -5,9 +5,14 @@
 
 #include <QMessageBox>
 #include <iostream>
+#include <fstream>
+#include <saveload.h>
+#include <QFileDialog>
 
 using std::cout;
+using std::cerr;
 using std::endl;
+using std::ofstream;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -39,7 +44,7 @@ MainWindow::~MainWindow()
 {
     delete needle;
     delete rose;
-    delete ui;
+	delete ui;
 }
 
 /**
@@ -72,7 +77,7 @@ void MainWindow::connections()
     connect(ui->b_arret, SIGNAL(clicked()), this, SLOT(stopAcquisition()));
     connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunicationSerie()));
     connect(ui->m_saveData, SIGNAL(triggered()), this, SLOT(saveData()));
-    connect(ui->m_loadData, SIGNAL(triggered()), this, SLOT(loadData()));
+	connect(ui->m_loadData, SIGNAL(triggered()), this, SLOT(loadData()));
     connect(ui->m_about, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->m_aboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(ui->dial_delai_acquisitionSpin, SIGNAL(valueChanged(double)), this, SLOT(dialChangedSpin(double)));
@@ -99,8 +104,6 @@ void MainWindow::connections()
 
     // timer --> Non lié car le com est un pointeur et faut null par défaut.
     //           Solution possible, slot sendcommand dans this qui ne fait qu'appeler le sendcommand du com en vérifiant que le pointeur n'est pas null
-    connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
-
     // Communication
     connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunication()));
 }
@@ -204,11 +207,14 @@ void MainWindow::createCommunicationSerie()
 {
     if (com == NULL) {
         com = new SerialPort(this);
+		connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
         connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
     }
     else if (com->getType() != Communication::Type::Serie){
+		disconnect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
         delete com;
         com = new SerialPort(this);
+		connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
         connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
     }
     if (!com->isConfigured()){
@@ -218,10 +224,6 @@ void MainWindow::createCommunicationSerie()
 
 void MainWindow::launchAcquisition()
 {
-    meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(10, 10);
-    meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(20, 50);
-    meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(30, 2);
-    meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(40, 10);
     if (com == NULL || !com->isConfigured()){
         // a remplacer par un create communication lorsqu'il sera créé
         this->createCommunicationSerie();
@@ -241,12 +243,54 @@ void MainWindow::launchAcquisition()
 
 void MainWindow::saveData()
 {
-
+	QString cheminFicSauvegarde = QFileDialog::getSaveFileName(this, "Sauvegarde des données", "/");
+	if (cheminFicSauvegarde.size() > 0){
+		ofstream sauvegarde(cheminFicSauvegarde.toStdString(), ios::out | ios::trunc);
+		if (sauvegarde){
+			meteo.saveData(sauvegarde);
+			int i = meteo.size();
+			for (Capteur *c : t_capteurs){
+				SaveLoad::saveCapteur(c, sauvegarde, i);
+				++i;
+			}
+			sauvegarde.close();
+		}
+		else {
+			cerr << "erreur ouverture du fichier de config" << endl;
+		}
+	}
 }
 
 void MainWindow::loadData()
 {
-
+	QString cheminFicRestaure = QFileDialog::getOpenFileName(this, "Restauration des données", "/");
+	if (cheminFicRestaure.size() > 0){
+		ifstream restaure(cheminFicRestaure.toStdString(), ios::in);
+		string num;
+		string coupleStdString;
+		QString coupleQString;
+		QStringList coupleValeur;
+		if (restaure){
+			while (getline(restaure, num)){
+				while (getline(restaure, coupleStdString)){
+					coupleQString = QString::fromStdString(coupleStdString);
+					coupleValeur.clear();
+					coupleValeur = coupleQString.split(';', QString::SkipEmptyParts);
+					if (coupleValeur.size() == 0)
+						break;
+					if (atoi(num.c_str()) < meteo.size()-1){
+						meteo.getCapt(static_cast<StationMeteo::TypeCapteur>(atoi(num.c_str())))->addValue(atof(coupleValeur.first().toStdString().c_str()), atof(coupleValeur.last().toStdString().c_str()));
+						cout << "ajout à la station meteo" << endl;
+					}
+					else {
+						analog1.addValue(atof(coupleValeur.first().toStdString().c_str()), atof(coupleValeur.last().toStdString().c_str()));
+						cout << "Ajour au capteur de la station" << endl;
+					}
+				}
+			}
+		}
+		else cerr << "Impossible d'ouvir le fichier en lecture" << endl;
+	}
 }
 
 void MainWindow::about()

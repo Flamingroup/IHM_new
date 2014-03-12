@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     capteurs/capteur.cpp \
     stationmeteo.cpp \
     plot.cpp \
-    convertisseur.cpp
+    convertisseur.cpp \
+    saveload.cpp
 
 HEADERS  += mainwindow.h \
     communication/communication.h \
@@ -39,6 +40,7 @@ HEADERS  += mainwindow.h \
     capteurs/capteur.h \
     stationmeteo.h \
     plot.h \
-    convertisseur.hpp
+    convertisseur.hpp \
+    saveload.h
 
 FORMS    += mainwindow.ui
