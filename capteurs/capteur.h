@@ -16,13 +16,18 @@ class Capteur : public QObject
 		bool attached = false;
 	public:
 		Capteur();
+
 		void addValue(double instantMesure, double value);
-        QColor getColor();
+
 		void setColor(QColor nColor);
 		void setVisible(bool b);
 		void setPlot(QwtPlot* plot);
-		bool isAttached();
-		QVector<QPointF>& getTimes();
+
+        bool isAttached() const;
+        bool isVisible() const;
+        QVector<QPointF>& getTimes();
+        QColor getColor() const;
+
 		~Capteur();
 };
 

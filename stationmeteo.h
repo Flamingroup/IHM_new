@@ -13,19 +13,19 @@ class StationMeteo
 	public:
 		enum TypeCapteur{
 			airPressure=0,
-			airTemperture=1,
-			hailAccumulation=2,
-			hailDuration=3,
-			hailIntensity=4,
+            airTemperture,
+            hailAccumulation,
+            hailDuration,
+            hailIntensity,
 			heatTemperature=5,
-			heatVoltage=6,
-			rainAccumulation=7,
-			rainDuration=8,
-			rainIntensity=9,
-			refVoltage=10,
-			relativeHumidity=11,
-			supplyVoltage=12,
-			windDirectionAvrg=13,
+            heatVoltage,
+            rainAccumulation,
+            rainDuration,
+            rainIntensity,
+            refVoltage=10,
+            relativeHumidity,
+            supplyVoltage,
+            windDirectionAvrg,
 			windSpeedAverage=14
         };
         QColor default_c[15]={
@@ -43,7 +43,7 @@ class StationMeteo
             QColor(Qt::darkRed),
             QColor(Qt::darkYellow),
             QColor(Qt::darkGray),
-            QColor(30,60,90,255)
+            QColor(30,60,90)
         };
 		StationMeteo(int idOrderMeteo = 5);
 		~StationMeteo();

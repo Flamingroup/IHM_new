@@ -35,6 +35,7 @@ class MainWindow : public QMainWindow
 		int nbChecked = 0;
 		bool c_AllCheckedManually = false;
 		ParseurRetour* p = NULL;
+
 		void connections();
         void defaultButtonColor();
 
@@ -73,6 +74,7 @@ class MainWindow : public QMainWindow
 		void windSpeedAverageToggled(bool);
 		void analog1Toggled(bool);
 		void toggleAll(bool);
+
 		void lireRetour();
 };
 

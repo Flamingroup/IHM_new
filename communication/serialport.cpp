@@ -20,15 +20,18 @@ void SerialPort::configurer()
 	//Bar-> setText(tr("Port %1 configured.").arg(m_port->portName()));
 }
 
+/**
+  @bug comme appelé par QTimer::timeout(), si erreur, elle n'arrete pas d'apparaitre et bloque complétement le programme
+*/
 void SerialPort::sendCommand()
 {
 	if (!m_port->isOpen()) {
 		if(!m_port->open(QIODevice::ReadWrite))	{
-			QMessageBox::warning(0, "Error !", tr("Can't open port with specified settings !"));
+            QMessageBox::warning(0, "Error !", tr("Can't open port with specified settings !"));
 			return;
 		}
 		else {
-			connect(m_port, SIGNAL(readyRead()), this, SLOT(onDataReceived()));
+            connect(m_port, SIGNAL(readyRead()), this, SLOT(onDataReceived())); // ATTENTION : boucle infinie (readyRead lance onDataReceived qui émet readyRead....)
 		}
 	}
 	if (!cmd.empty()) {
@@ -44,13 +47,13 @@ void SerialPort::startReading()
 {
 	if(!m_port->open(QIODevice::ReadWrite))
 	{
-		QMessageBox::warning(0, "Error !", tr("Can't open port with specified settings !"));
+        QMessageBox::warning(0, "Error !", tr("Can't open port with specified settings !"));
 	}
 
 	else
 	{
 		//m_status->setText(tr("Port %1 open, reading in process").arg(m_port->portName()));
-		connect(m_port, SIGNAL(readyRead()), this, SLOT(onDataReceived()));
+        connect(m_port, SIGNAL(readyRead()), this, SLOT(onDataReceived())); // ATTENTION : boucle infinie (readyRead lance onDataReceived qui émet readyRead....)
 	}
 }
 

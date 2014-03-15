@@ -5,7 +5,7 @@ Communication::Communication(QWidget* parent)
 	this->parent=parent;
 }
 
-bool Communication::isConfigured()
+bool Communication::isConfigured() const
 {
 	return configured;
 }
@@ -15,7 +15,7 @@ void Communication::unConfigure()
 	configured=false;
 }
 
-Communication::Type Communication::getType()
+Communication::Type Communication::getType() const
 {
 	return type;
 }

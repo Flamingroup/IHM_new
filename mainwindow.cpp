@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     analog1.setPlot(p_plot);
     meteo.setPlot(p_plot);
     ui->plotLayout->addWidget(p_plot, 1, 0);
-    ui->dial_delai_acquisitionSpin->setMinimum(0.1);
+    ui->dial_delai_acquisitionSpin->setMinimum(1.0);
     ui->dial_delai_acquisitionSpin->setMaximum(3600.00);
     ui->dial_delai_acquisition->setMinimum(1);
     ui->dial_delai_acquisition->setMaximum(36000);
@@ -38,21 +38,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Compass->setValue(180);
     ui->Compass->setNeedle(needle);
     ui->Compass->setReadOnly(true);
+
 }
 
 MainWindow::~MainWindow()
 {
+    delete p_plot;
     delete needle;
     delete rose;
-	delete ui;
+    delete ui;
 }
 
 /**
- * @brief MainWindow::connections Constructeur de la fenêtre principale du logiciel
+ * @brief MainWindow::connections pour la partie interactive
  */
 void MainWindow::connections()
 {
-
     //Color buttons
     connect(ui->bc_airPressure, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
     connect(ui->bc_airTemperture, SIGNAL(clicked()), this, SLOT(changeCurveColor()));
@@ -77,7 +78,7 @@ void MainWindow::connections()
     connect(ui->b_arret, SIGNAL(clicked()), this, SLOT(stopAcquisition()));
     connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunicationSerie()));
     connect(ui->m_saveData, SIGNAL(triggered()), this, SLOT(saveData()));
-	connect(ui->m_loadData, SIGNAL(triggered()), this, SLOT(loadData()));
+    connect(ui->m_loadData, SIGNAL(triggered()), this, SLOT(loadData()));
     connect(ui->m_about, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->m_aboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     connect(ui->dial_delai_acquisitionSpin, SIGNAL(valueChanged(double)), this, SLOT(dialChangedSpin(double)));
@@ -203,24 +204,6 @@ void MainWindow::defaultButtonColor(){
 }
 
 
-void MainWindow::createCommunicationSerie()
-{
-    if (com == NULL) {
-        com = new SerialPort(this);
-		connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
-        connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
-    }
-    else if (com->getType() != Communication::Type::Serie){
-		disconnect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
-        delete com;
-        com = new SerialPort(this);
-		connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
-        connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
-    }
-    if (!com->isConfigured()){
-        com->configurer();
-    }
-}
 
 void MainWindow::launchAcquisition()
 {
@@ -232,65 +215,86 @@ void MainWindow::launchAcquisition()
         QMessageBox::warning(0, "Error !", "Veuillez configurer la communication avant de commencer des mesures");
         return;
     }
-    if (timer.isActive())
-        return;
+    if (timer.isActive()) return;
     com->setCommand("00");
     timer.start();
-    com->sendCommand();
 
     ui->l_acquState->setText("Acquisition en cours");
 }
 
+void MainWindow::createCommunicationSerie()
+{
+    if (com == NULL) { /// pas encore de com créée
+        com = new SerialPort(this);
+        connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
+        connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
+    }
+    else if (com->getType() != Communication::Type::Serie){ /// une com créée mais pas série
+        disconnect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
+        delete com;
+        com = new SerialPort(this);
+        connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
+        connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
+    }
+
+    if (!com->isConfigured()){
+        com->configurer();
+    }
+}
+
+/**
+  @brief sauvegarde données dans un fichier
+*/
 void MainWindow::saveData()
 {
-	QString cheminFicSauvegarde = QFileDialog::getSaveFileName(this, "Sauvegarde des données", "/");
-	if (cheminFicSauvegarde.size() > 0){
-		ofstream sauvegarde(cheminFicSauvegarde.toStdString(), ios::out | ios::trunc);
-		if (sauvegarde){
-			meteo.saveData(sauvegarde);
-			int i = meteo.size();
-			for (Capteur *c : t_capteurs){
-				SaveLoad::saveCapteur(c, sauvegarde, i);
-				++i;
-			}
-			sauvegarde.close();
-		}
-		else {
-			cerr << "erreur ouverture du fichier de config" << endl;
-		}
-	}
+    QString cheminFicSauvegarde = QFileDialog::getSaveFileName(this, "Sauvegarde des données", "/");
+    if (cheminFicSauvegarde.size() > 0){
+        ofstream sauvegarde(cheminFicSauvegarde.toStdString(), ios::out | ios::trunc);
+        if (sauvegarde){
+            meteo.saveData(sauvegarde);
+            int i = meteo.size();
+            for (Capteur *c : t_capteurs){
+                SaveLoad::saveCapteur(c, sauvegarde, i);
+                ++i;
+            }
+            sauvegarde.close();
+        }
+        else {
+            cerr << "erreur ouverture du fichier de config" << endl;
+        }
+    }
 }
 
 void MainWindow::loadData()
 {
-	QString cheminFicRestaure = QFileDialog::getOpenFileName(this, "Restauration des données", "/");
-	if (cheminFicRestaure.size() > 0){
-		ifstream restaure(cheminFicRestaure.toStdString(), ios::in);
-		string num;
-		string coupleStdString;
-		QString coupleQString;
-		QStringList coupleValeur;
-		if (restaure){
-			while (getline(restaure, num)){
-				while (getline(restaure, coupleStdString)){
-					coupleQString = QString::fromStdString(coupleStdString);
-					coupleValeur.clear();
-					coupleValeur = coupleQString.split(';', QString::SkipEmptyParts);
-					if (coupleValeur.size() == 0)
-						break;
-					if (atoi(num.c_str()) < meteo.size()-1){
-						meteo.getCapt(static_cast<StationMeteo::TypeCapteur>(atoi(num.c_str())))->addValue(atof(coupleValeur.first().toStdString().c_str()), atof(coupleValeur.last().toStdString().c_str()));
-						cout << "ajout à la station meteo" << endl;
-					}
-					else {
-						analog1.addValue(atof(coupleValeur.first().toStdString().c_str()), atof(coupleValeur.last().toStdString().c_str()));
-						cout << "Ajour au capteur de la station" << endl;
-					}
-				}
-			}
-		}
-		else cerr << "Impossible d'ouvir le fichier en lecture" << endl;
-	}
+    QString cheminFicRestaure = QFileDialog::getOpenFileName(this, "Restauration des données", "/");
+    if (cheminFicRestaure.size() > 0){
+        ifstream restaure(cheminFicRestaure.toStdString(), ios::in);
+        string num;
+        string coupleStdString;
+        QString coupleQString;
+        QStringList coupleValeur;
+        if (restaure){
+            while (getline(restaure, num)){
+                while (getline(restaure, coupleStdString)){
+                    coupleQString = QString::fromStdString(coupleStdString);
+                    coupleValeur.clear();
+                    coupleValeur = coupleQString.split(';', QString::SkipEmptyParts);
+                    if (coupleValeur.size() == 0)
+                        break;
+                    if (atoi(num.c_str()) < meteo.size()-1){
+                        meteo.getCapt(static_cast<StationMeteo::TypeCapteur>(atoi(num.c_str())))->addValue(atof(coupleValeur.first().toStdString().c_str()), atof(coupleValeur.last().toStdString().c_str()));
+                        cout << "ajout à la station meteo" << endl;
+                    }
+                    else {
+                        analog1.addValue(atof(coupleValeur.first().toStdString().c_str()), atof(coupleValeur.last().toStdString().c_str()));
+                        cout << "Ajour au capteur de la station" << endl;
+                    }
+                }
+            }
+        }
+        else cerr << "Impossible d'ouvir le fichier en lecture" << endl;
+    }
 }
 
 void MainWindow::about()
@@ -623,7 +627,7 @@ void MainWindow::lireRetour()
                 while (itListe != (*itRetour)->end()){
                     QString* valeur;
                     QString *unit;
-                    if (**itListe == "Dm"){
+                    if (**itListe == "Dm"){ // wind direction avg
                         ++itListe;
                         valeur = *itListe;
                         ++itListe;
@@ -631,8 +635,11 @@ void MainWindow::lireRetour()
 
                         unit = *itListe;
                         cout << ", unite : "<< unit->toStdString() <<endl;
-                        //meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg)->addValue(instant, valeur->toDouble());
-                        //ui->v_windDirectionAvrg->setText(*valeur);
+//                        Capteur *c = meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg);
+//                        c->addValue(instant, valeur->toDouble());
+//                        ui->v_windDirectionAvrg->setText(*valeur);
+//                        if(c->isVisible()) ui->Compass->setValue(valeur->toDouble()); // bouge boussole fct direction
+
                         ++itListe;
                     }
                     else if (**itListe == "Sm"){

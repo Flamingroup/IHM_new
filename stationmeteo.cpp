@@ -13,7 +13,6 @@ StationMeteo::StationMeteo(int idOrderMeteo)
 //        t_capteursStation[i]->addValue(5,2*i);
 //        t_capteursStation[i]->addValue(20,3*i);
 	}
-
 }
 
 StationMeteo::~StationMeteo()

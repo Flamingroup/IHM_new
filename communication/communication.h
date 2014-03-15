@@ -17,9 +17,9 @@ class Communication : public QWidget
 		virtual void configurer() = 0;
 		virtual void stopReading() = 0;
 		virtual QByteArray readAll() = 0;
-		virtual bool isConfigured();
+        virtual bool isConfigured() const;
 		void unConfigure();
-		Type getType();
+        Type getType() const;
 		virtual void setCommand(string);
 	protected :
 		QWidget* parent;
