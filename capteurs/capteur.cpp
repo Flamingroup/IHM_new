@@ -12,9 +12,14 @@ void Capteur::addValue(double instantMesure, double value)
 
 QColor Capteur::getColor() const
 {
-    return color;
+	return color;
 }
 
+void Capteur::clear()
+{
+	times.clear();
+	curve.setSamples(times);
+}
 
 void Capteur::setColor(QColor nColor)
 {
@@ -52,7 +57,7 @@ QVector<QPointF>& Capteur::getTimes()
 
 Capteur::~Capteur()
 {
-    if (isAttached()){
-        curve.detach();
-    }
+	if (isAttached()){
+		curve.detach();
+	}
 }

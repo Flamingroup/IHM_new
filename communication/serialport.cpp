@@ -12,6 +12,11 @@ SerialPort::SerialPort(QWidget* parent)
 	m_port = new QextSerialPort();
 }
 
+SerialPort::~SerialPort()
+{
+	m_port->close();
+}
+
 void SerialPort::configurer()
 {
 	tmp_port = new QextSerialPort();
@@ -25,6 +30,7 @@ void SerialPort::configurer()
 */
 void SerialPort::sendCommand()
 {
+	cout << "Appel de sendCommand" << endl;
 	if (!m_port->isOpen()) {
 		if(!m_port->open(QIODevice::ReadWrite))	{
             QMessageBox::warning(0, "Error !", tr("Can't open port with specified settings !"));
@@ -37,6 +43,26 @@ void SerialPort::sendCommand()
 	if (!cmd.empty()) {
 		cmd.append("\n");
 		m_port->write(cmd.c_str());
+	}
+	else {
+		QMessageBox::warning(0, "Error !", tr("Problem, the command is empty"));
+	}
+}
+
+void SerialPort::sendSpecialCommand(string s)
+{
+	if (!m_port->isOpen()) {
+		if(!m_port->open(QIODevice::ReadWrite))	{
+			QMessageBox::warning(0, "Error !", tr("Can't open port with specified settings !"));
+			return;
+		}
+		else {
+			connect(m_port, SIGNAL(readyRead()), this, SLOT(onDataReceived())); // ATTENTION : boucle infinie (readyRead lance onDataReceived qui émet readyRead....)
+		}
+	}
+	if (!s.empty()) {
+		s.append("\r\n");
+		m_port->write(s.c_str());
 	}
 	else {
 		QMessageBox::warning(0, "Error !", tr("Problem, the command is empty"));
@@ -79,5 +105,12 @@ void SerialPort::validateConfig()
 	delete m_port;
 	m_port = tmp_port;
 	tmp_port=NULL;
-	configured=true;
+	if(!m_port->open(QIODevice::ReadWrite))	{
+		QMessageBox::warning(0, "Error !", tr("Can't open port with specified settings !"));
+		configured=false;
+	}
+	else {
+		configured=true;
+		m_port->close();
+	}
 }

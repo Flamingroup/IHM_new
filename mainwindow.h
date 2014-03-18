@@ -25,13 +25,13 @@ class MainWindow : public QMainWindow
 	private:
 		Ui::MainWindow *ui;
 		Communication* com = NULL;
-		Plot* p_plot;
 		StationMeteo meteo;
+		Plot* p_plot;
 		vector<Capteur*> t_capteurs;
 		QTimer timer;
+		QTimer waitToRead;
 		QwtSimpleCompassRose *rose;
 		QwtCompassWindArrow *needle;
-		Capteur analog1;
 		int nbChecked = 0;
 		bool c_AllCheckedManually = false;
 		ParseurRetour* p = NULL;
@@ -39,8 +39,7 @@ class MainWindow : public QMainWindow
 		void connections();
         void defaultButtonColor();
 
-        void toggleChanged(bool ischecked);
-
+		void toggleChanged(bool ischecked);
 
 	public slots:
 		void createCommunicationSerie();
@@ -49,12 +48,13 @@ class MainWindow : public QMainWindow
 		void saveData();
 		void loadData();
 		void about();
-		void dialChangedSpin(double value);
-		void dialChanged(int value);
+		void delaiChangedSpin(double value);
+		void delaiChangedDial(int value);
 		void pauseAcquisition();
 		void stopAcquisition();
 
 		void changeCurveColor();
+		void sendSpecialCommand();
 
 		/** Gestion des checkboxes **/
 		void airPressureToggled(bool);
@@ -76,6 +76,8 @@ class MainWindow : public QMainWindow
 		void toggleAll(bool);
 
 		void lireRetour();
+		void clearCurve();
+		void waitToReadslot();
 };
 
 #endif // MAINWINDOW_H

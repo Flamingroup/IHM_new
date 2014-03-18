@@ -27,7 +27,7 @@ class Capteur : public QObject
         bool isVisible() const;
         QVector<QPointF>& getTimes();
         QColor getColor() const;
-
+		void clear();
 		~Capteur();
 };
 

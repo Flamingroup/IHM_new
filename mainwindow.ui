@@ -44,8 +44,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>498</width>
-             <height>608</height>
+             <width>485</width>
+             <height>583</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
@@ -220,7 +220,7 @@
              </widget>
             </item>
             <item row="20" column="2">
-             <widget class="QLabel" name="v_heatTemperature_2">
+             <widget class="QLabel" name="v_heatVoltage">
               <property name="text">
                <string>Label</string>
               </property>
@@ -734,7 +734,7 @@
            <zorder>c_hailIntensity</zorder>
            <zorder>c_heatTemperature</zorder>
            <zorder>u_supplyVoltage</zorder>
-           <zorder>v_heatTemperature_2</zorder>
+           <zorder>v_heatVoltage</zorder>
            <zorder>c_heatVoltage</zorder>
            <zorder>u_heatTemperature_2</zorder>
            <zorder>v_supplyVoltage</zorder>
@@ -769,8 +769,8 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0">
-       <widget class="QFrame" name="frame">
+      <item row="2" column="0">
+       <widget class="QFrame" name="frame_specialCommand">
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -782,34 +782,41 @@
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
          <item>
-          <widget class="QLineEdit" name="lineEdit">
+          <widget class="QLineEdit" name="le_specialCommand">
            <property name="text">
-            <string>Commande spéciale</string>
+            <string/>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="b_specialCommand">
            <property name="text">
             <string>Envoyer</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="l_reponse">
            <property name="text">
             <string>Réponse :</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="te_answer">
+          <widget class="QTextEdit" name="te_specialAnswer">
            <property name="readOnly">
             <bool>true</bool>
            </property>
           </widget>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>  Commande spéciale :</string>
+        </property>
        </widget>
       </item>
      </layout>
@@ -886,7 +893,7 @@
          <item row="3" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QDoubleSpinBox" name="dial_delai_acquisitionSpin"/>
+            <widget class="QDoubleSpinBox" name="spin_delai_acquisition"/>
            </item>
            <item>
             <widget class="QLabel" name="dial_delai_unity">
@@ -939,7 +946,7 @@
      <x>0</x>
      <y>0</y>
      <width>1491</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConfiguration_port_s_rie">

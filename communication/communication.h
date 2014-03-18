@@ -21,6 +21,7 @@ class Communication : public QWidget
 		void unConfigure();
         Type getType() const;
 		virtual void setCommand(string);
+		virtual void sendSpecialCommand(string s) = 0;
 	protected :
 		QWidget* parent;
 		bool configured = false;

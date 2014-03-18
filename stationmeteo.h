@@ -51,6 +51,7 @@ class StationMeteo
 		Capteur* getCapt(TypeCapteur t);
         void setPlot(QwtPlot* plot);
 		void saveData(std::ofstream& stream);
+		void clear();
 		int size();
 };
 

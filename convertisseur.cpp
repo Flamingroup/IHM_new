@@ -134,7 +134,9 @@ double Convertisseur::convertPression(double value, char from, char to)
         return convertToPascal(value, from);
     case 'B': // bar
         return convertToBar(value, from);
-    case '#':
+	case 'H': // bar
+		return convertToHectoPascal(value, from);
+	case '#':
         cerr << "Invalid data" << endl;
         return value;
     default:
@@ -162,6 +164,27 @@ double Convertisseur::convertToPascal(double value, char from)
         return value;
     }
 }
+
+double Convertisseur::convertToHectoPascal(double value, char from)
+{
+	switch(from) {
+	case 'B': // bar
+		return value * 100.0; // 1 bar = 10^2 hPa
+	case 'P': // hPa
+		return value / 100.0;
+	case 'M': // mmHg
+		return value * 1.33322;
+	case 'I': // inHg
+		return value * 33.8638816;
+	case 'H': // meme unité
+		return value;
+	default:
+		cerr << "Error, can't convert from'" << from << "', correct : H (hPa), B (bar), M (mmHg), I(inHg)" << endl;
+		return value;
+	}
+}
+
+
 
 double Convertisseur::convertToBar(double value, char from)
 {

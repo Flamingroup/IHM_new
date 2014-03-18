@@ -18,18 +18,20 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    // A connecter avec plot et non avec this
-    //connect(ui->m_clearCurve, SIGNAL(triggered()), this, SLOT(clearCurve()));
+	ui->setupUi(this);
     p_plot = new Plot();
-    analog1.setPlot(p_plot);
+	t_capteurs.push_back(new Capteur());
+	t_capteurs[0]->setPlot(p_plot);
     meteo.setPlot(p_plot);
     ui->plotLayout->addWidget(p_plot, 1, 0);
-    ui->dial_delai_acquisitionSpin->setMinimum(1.0);
-    ui->dial_delai_acquisitionSpin->setMaximum(3600.00);
+	ui->spin_delai_acquisition->setMinimum(1.0);
+	ui->spin_delai_acquisition->setMaximum(3600.00);
     ui->dial_delai_acquisition->setMinimum(1);
     ui->dial_delai_acquisition->setMaximum(36000);
-
+	timer.setInterval(1000);
+	waitToRead.setInterval(100);
+	waitToRead.setSingleShot(true);
+	connect(&waitToRead, SIGNAL(timeout()), this, SLOT(lireRetour()));
     connections();
     defaultButtonColor();
 
@@ -43,10 +45,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete p_plot;
+	for (Capteur* c : t_capteurs){
+		delete c;
+	}
+	delete com;
+	delete p_plot;
     delete needle;
-    delete rose;
-    delete ui;
+	delete rose;
 }
 
 /**
@@ -76,13 +81,17 @@ void MainWindow::connections()
     connect(ui->b_play, SIGNAL(clicked()), this, SLOT(launchAcquisition()));
     connect(ui->b_pause, SIGNAL(clicked()), this, SLOT(pauseAcquisition()));
     connect(ui->b_arret, SIGNAL(clicked()), this, SLOT(stopAcquisition()));
-    connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunicationSerie()));
-    connect(ui->m_saveData, SIGNAL(triggered()), this, SLOT(saveData()));
-    connect(ui->m_loadData, SIGNAL(triggered()), this, SLOT(loadData()));
-    connect(ui->m_about, SIGNAL(triggered()), this, SLOT(about()));
-    connect(ui->m_aboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-    connect(ui->dial_delai_acquisitionSpin, SIGNAL(valueChanged(double)), this, SLOT(dialChangedSpin(double)));
-    connect(ui->dial_delai_acquisition, SIGNAL(valueChanged(int)), this, SLOT(dialChanged(int)));
+	connect(ui->spin_delai_acquisition, SIGNAL(valueChanged(double)), this, SLOT(delaiChangedSpin(double)));
+	connect(ui->dial_delai_acquisition, SIGNAL(valueChanged(int)), this, SLOT(delaiChangedDial(int)));
+
+	//Menus
+	connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunicationSerie()));
+	connect(ui->m_saveData, SIGNAL(triggered()), this, SLOT(saveData()));
+	connect(ui->m_loadData, SIGNAL(triggered()), this, SLOT(loadData()));
+	connect(ui->m_about, SIGNAL(triggered()), this, SLOT(about()));
+	connect(ui->m_aboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+	connect(ui->m_clearCurve, SIGNAL(triggered()), SLOT(clearCurve()));
+	connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunicationSerie()));
 
     //checkboxes
     connect(ui->c_airPressure, SIGNAL(toggled(bool)), this, SLOT(airPressureToggled(bool)));
@@ -103,10 +112,9 @@ void MainWindow::connections()
     connect(ui->c_analog1, SIGNAL(toggled(bool)), this, SLOT(analog1Toggled(bool)));
     connect(ui->c_all, SIGNAL(toggled(bool)), this, SLOT(toggleAll(bool)));
 
-    // timer --> Non lié car le com est un pointeur et faut null par défaut.
-    //           Solution possible, slot sendcommand dans this qui ne fait qu'appeler le sendcommand du com en vérifiant que le pointeur n'est pas null
-    // Communication
-    connect(ui->m_portSerie, SIGNAL(triggered()), this, SLOT(createCommunication()));
+	connect(ui->le_specialCommand, SIGNAL(returnPressed()), this, SLOT(sendSpecialCommand()));
+	connect(ui->b_specialCommand, SIGNAL(clicked()), this, SLOT(sendSpecialCommand()));
+
 }
 
 void MainWindow::defaultButtonColor(){
@@ -204,6 +212,19 @@ void MainWindow::defaultButtonColor(){
 }
 
 
+void MainWindow::sendSpecialCommand(){
+	if (com == NULL || !com->isConfigured()){
+		// a remplacer par un create communication lorsqu'il sera créé
+		this->createCommunicationSerie();
+	}
+	if (!com->isConfigured()){
+		QMessageBox::warning(0, "Error !", "Veuillez configurer la communication correctement avant de commencer des mesures");
+		return;
+	}
+	com->sendSpecialCommand(ui->le_specialCommand->text().toStdString());
+	ui->le_specialCommand->setText("");
+}
+
 
 void MainWindow::launchAcquisition()
 {
@@ -212,29 +233,29 @@ void MainWindow::launchAcquisition()
         this->createCommunicationSerie();
     }
     if (!com->isConfigured()){
-        QMessageBox::warning(0, "Error !", "Veuillez configurer la communication avant de commencer des mesures");
+		QMessageBox::warning(0, "Error !", "Veuillez configurer la communication correctement avant de commencer des mesures");
         return;
     }
     if (timer.isActive()) return;
-    com->setCommand("00");
+	com->setCommand("00");
     timer.start();
-
+	com->sendCommand();
     ui->l_acquState->setText("Acquisition en cours");
 }
 
 void MainWindow::createCommunicationSerie()
 {
     if (com == NULL) { /// pas encore de com créée
-        com = new SerialPort(this);
-        connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
-        connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
+		com = new SerialPort(this);
+		connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
+		connect(com, SIGNAL(readyRead()), this, SLOT(waitToReadslot()));
     }
     else if (com->getType() != Communication::Type::Serie){ /// une com créée mais pas série
         disconnect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
         delete com;
         com = new SerialPort(this);
-        connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
-        connect(com, SIGNAL(readyRead()), this, SLOT(lireRetour()));
+		connect(&timer, SIGNAL(timeout()), com, SLOT(sendCommand()));
+		connect(com, SIGNAL(readyRead()), this, SLOT(waitToReadslot()));
     }
 
     if (!com->isConfigured()){
@@ -287,7 +308,7 @@ void MainWindow::loadData()
                         cout << "ajout à la station meteo" << endl;
                     }
                     else {
-                        analog1.addValue(atof(coupleValeur.first().toStdString().c_str()), atof(coupleValeur.last().toStdString().c_str()));
+						t_capteurs[0]->addValue(atof(coupleValeur.first().toStdString().c_str()), atof(coupleValeur.last().toStdString().c_str()));
                         cout << "Ajour au capteur de la station" << endl;
                     }
                 }
@@ -302,15 +323,16 @@ void MainWindow::about()
     QMessageBox::warning(0, "About", "Programme cree par Yann, Raphael, Aymeric et Loic");
 }
 
-void MainWindow::dialChangedSpin(double value)
+void MainWindow::delaiChangedSpin(double value)
 {
-    ui->dial_delai_acquisition->setValue(qint32(value*10));
-    timer.setInterval(value);
+	ui->dial_delai_acquisition->setValue(qint32(value*10));
+	cout << ui->dial_delai_acquisition->value() << endl << endl;
+	timer.setInterval(int(ui->dial_delai_acquisition->value()*100));
 }
 
-void MainWindow::dialChanged(int value)
+void MainWindow::delaiChangedDial(int value)
 {
-    ui->dial_delai_acquisitionSpin->setValue(double(value/10.0));
+	ui->spin_delai_acquisition->setValue(double(value/10.0));
     // A décommenter si on supprime dans le dialChangedSpin();
     //timer.setInterval(ui->dial_delai_acquisitionSpin->value()*1000);
 }
@@ -351,7 +373,7 @@ void MainWindow::changeCurveColor()
         newColor = QColorDialog::getColor(Qt::white,this);
         if(!newColor.isValid())
             return;
-        analog1.setColor(newColor);
+		t_capteurs[0]->setColor(newColor);
         focusedButton=ui->bc_analog1;
     }
     else if (ui->bc_hailAccumulation->hasFocus()){
@@ -466,7 +488,7 @@ void MainWindow::toggleChanged(bool ischecked)
         ui->c_all->setChecked(false);
         c_AllCheckedManually = false;
     }
-    else if(nbChecked == 16) ui->c_all->setChecked(true);
+	else if(nbChecked == 16) ui->c_all->setChecked(true);
 }
 
 void MainWindow::airPressureToggled(bool ischecked)
@@ -577,7 +599,7 @@ void MainWindow::windSpeedAverageToggled(bool ischecked)
 void MainWindow::analog1Toggled(bool ischecked)
 {
     toggleChanged(ischecked);
-    analog1.setVisible(ischecked);
+	t_capteurs[0]->setVisible(ischecked);
 }
 
 void MainWindow::toggleAll(bool ischecked)
@@ -602,220 +624,198 @@ void MainWindow::toggleAll(bool ischecked)
     ui->c_analog1->setChecked(ischecked);
 }
 
+void MainWindow::waitToReadslot(){
+	waitToRead.start();
+}
+
 void MainWindow::lireRetour()
 {
-    //	QString s (com->readAll());
-    QString s = "0;20;2000;0R1,Dm=027D,Sm=0.1M\r\n0R2,Ta=74.6F,Ua=14.7P,Pa=1012.9H\r\n0R3,Rc=0.10M,Rd=2380s,Ri=0.0M,Hc=0.0M,Hd=0s,Hi=0.0M\r\n0R5,Th=76.1F,Vh=11.5N,Vs=11.5V,Vr=3.510V\r\n";
-    double instant, analog1value;
-    QStringList sl = s.split(';');
-    cout << sl.size() << endl;
-    if (sl.first() == "0") {
-        sl.removeFirst();
-        instant = sl.first().toDouble();
-        cout << "instant " << instant << endl;
-        sl.removeFirst();
-        analog1value = sl.first().toDouble();
-        //		analog1.addValue(instant, analog1value);
-        cout << "valeur analogique " << analog1value << endl;
-        sl.removeFirst();
-        for (QString i : sl.first().split("\r\n", QString::SkipEmptyParts)) {
-            QString str = i.remove(0, 4);
-            QList<QList<QString*>*>* retour = ParseurRetour::parse(str);
-            auto itRetour = retour->begin();
-            for (; itRetour!= retour->end(); ++itRetour){
-                auto itListe = (*itRetour)->begin();
-                while (itListe != (*itRetour)->end()){
-                    QString* valeur;
-                    QString *unit;
-                    if (**itListe == "Dm"){ // wind direction avg
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
 
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString() <<endl;
-//                        Capteur *c = meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg);
-//                        c->addValue(instant, valeur->toDouble());
-//                        ui->v_windDirectionAvrg->setText(*valeur);
-//                        if(c->isVisible()) ui->Compass->setValue(valeur->toDouble()); // bouge boussole fct direction
+//	#ifdef Q_OS_WIN
+//		Sleep(uint(100));
+//	#else
+//		struct timespec ts = { 100 / 1000, (100 % 1000) * 1000 * 1000 };
+//		nanosleep(&ts, NULL);
+//	#endif
+	QString s(com->readAll());
+	ui->te_specialAnswer->setText(s);
+	//QString s = "0;20;2000;0R1,Dm=027D,Sm=0.1M\r\n0R2,Ta=74.6F,Ua=14.7P,Pa=1012.9H\r\n0R3,Rc=0.10M,Rd=2380s,Ri=0.0M,Hc=0.0M,Hd=0s,Hi=0.0M\r\n0R5,Th=76.1F,Vh=11.5N,Vs=11.5V,Vr=3.510V\r\n";
+	cout << s.toStdString() << endl;
+	double instant, analog1value;
+	QStringList sl = s.split(';');
+	if (sl.isEmpty())
+		return;
+	if (sl.first() == "0") {
+		sl.removeFirst();
+		instant = sl.first().toDouble();
+		sl.removeFirst();
+		analog1value = sl.first().toDouble();
+		t_capteurs[0]->addValue(instant, analog1value);
+		ui->v_analog1->setText(sl.first());
+		sl.removeFirst();
+		for (QString i : sl.first().split("\r\n", QString::SkipEmptyParts)) {
+			QString str = i.remove(0, 4);
+			QList<QList<QString*>*>* retour = ParseurRetour::parse(str);
+			auto itRetour = retour->begin();
+			for (; itRetour!= retour->end(); ++itRetour){
+				auto itListe = (*itRetour)->begin();
+				while (itListe != (*itRetour)->end()){
+					QString* valeur;
+					if (**itListe == "Dm"){ // wind direction avg
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						Capteur *c = meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg);
+						c->addValue(instant, valeur->toDouble());
+						ui->v_windDirectionAvrg->setText(*valeur);
+						if(c->isVisible())
+							ui->Compass->setValue(valeur->toDouble()); // bouge boussole fct direction
+						++itListe;
+					}
+					else if (**itListe == "Sm"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage)->addValue(instant, Convertisseur::convertSpeed(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')) ;
+						ui->v_windSpeedAverage->setText(QString::number(Convertisseur::convertSpeed(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')));
+						++itListe;
+					}
+					else if (**itListe == "Ta"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C'));
+						ui->v_airTemperture->setText(QString::number(Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C')));
+						++itListe;
+					}
+					else if (**itListe == "Ua"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity)->addValue(instant, valeur->toDouble());
+						ui->v_relativeHumidity->setText(QString::number(valeur->toDouble()));
+						++itListe;
+					}
+					else if (**itListe == "Pa"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(instant, Convertisseur::convertPression(valeur->toDouble(), (*itListe)->toStdString()[0], 'H'));
+						ui->v_airPressure->setText(QString::number(Convertisseur::convertPression(valeur->toDouble(), (*itListe)->toStdString()[0], 'H')));
+						++itListe;
+					}
+					else if (**itListe == "Rc"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->addValue(instant, Convertisseur::convertDistance(valeur->toDouble(), (*itListe)->toStdString()[0], 'M'));
+						ui->v_rainAccumulation->setText(QString::number(Convertisseur::convertDistance(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')));
+						++itListe;
+					}
+					else if (**itListe == "Rd"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::rainDuration)->addValue(instant, valeur->toDouble());
+						ui->v_rainDuration->setText(QString::number(valeur->toDouble()));
+						++itListe;
+					}
+					else if (**itListe == "Ri"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity)->addValue(instant, Convertisseur::convertDistance(valeur->toDouble(), (*itListe)->toStdString()[0], 'M'));
+						ui->v_rainIntensity->setText(QString::number(Convertisseur::convertDistance(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')));
+						++itListe;
+					}
+					else if (**itListe == "Hc"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation)->addValue(instant, Convertisseur::convertHail(valeur->toDouble(), (*itListe)->toStdString()[0], 'M'));
+						ui->v_hailAccumulation->setText(QString::number(Convertisseur::convertHail(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')));
+						++itListe;
+					}
+					else if (**itListe == "Hd"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::hailDuration)->addValue(instant, valeur->toDouble());
+						ui->v_hailDuration->setText(QString::number(valeur->toDouble()));
+						++itListe;
+					}
+					else if (**itListe == "Hi"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity)->addValue(instant, valeur->toDouble());
+						ui->v_hailIntensity->setText(QString::number(valeur->toDouble()));
+						++itListe;
+					}
+					else if (**itListe == "Th"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C'));
+						ui->v_heatTemperature->setText(QString::number(Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C')));
+						++itListe;
+					}
+					else if (**itListe == "Vh"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->addValue(instant, valeur->toDouble());
+						ui->v_heatVoltage->setText(QString::number(valeur->toDouble()));
+						++itListe;
+					}
+					else if (**itListe == "Vs"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->addValue(instant, valeur->toDouble());
+						ui->v_supplyVoltage->setText(QString::number(valeur->toDouble()));
+						++itListe;
+					}
+					else if (**itListe == "Vr"){
+						++itListe;
+						valeur = *itListe;
+						++itListe;
+						meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->addValue(instant, valeur->toDouble());
+						ui->v_refVoltage->setText(QString::number(valeur->toDouble()));
+						++itListe;
+					}
+					else {
+						break;
+					}
+				}
+			}
+			itRetour = retour->begin();
+			for (; itRetour!= retour->end(); ++itRetour){
+				auto itListe = (*itRetour)->begin();
+				for (; itListe != (*itRetour)->end(); ++itListe){
+					delete (*itListe);
+				}
+				delete *itRetour;
+			}
+			delete retour;
+		}
+	}
+	else if (sl.first() == "1"){
+		sl.removeFirst();
+		/** A lot of work to do **/
+	}
+	else if (sl.first() == "2"){
+		sl.removeFirst();
+		//		ui->te_answer->setText(sl.first());
+		cout << sl.first().toStdString() << endl;
+	}
+}
 
-                        ++itListe;
-                    }
-                    else if (**itListe == "Sm"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString();
-                        cout << ", convertit : " << Convertisseur::convertSpeed(valeur->toDouble(), unit->toStdString()[0], 'M') << endl;
-                        //meteo.getCapt(StationMeteo::TypeCapteur::windSpeedAverage)->addValue(instant, Convertisseur::convertSpeed(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')) ;
-                        //ui->v_windSpeedAverage->setText(QString::number(Convertisseur::convertSpeed(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')));
-                        ++itListe;
-                    }
-                    else if (**itListe == "Ta"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString();
-                        cout << ", convertit : " << Convertisseur::convertTemperature(valeur->toDouble(), unit->toStdString()[0], 'C') << endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C'));
-                        ++itListe;
-                    }
-                    else if (**itListe == "Ua"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString() <<endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::relativeHumidity)->addValue(instant, valeur->toDouble());
-                        ++itListe;
-                    }
-                    else if (**itListe == "Pa"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString();
-                        cout << ", convertit : " << Convertisseur::convertPression(valeur->toDouble(), unit->toStdString()[0], 'P') << endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(instant, Convertisseur::convertPression(valeur->toDouble(), (*itListe)->toStdString()[0], 'P'));
-                        ++itListe;
-                    }
-                    else if (**itListe == "Rc"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString();
-                        cout << ", convertit : " << Convertisseur::convertDistance(valeur->toDouble(), unit->toStdString()[0], 'M') << endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->addValue(instant, valeur->toDouble());
-                        ++itListe;
-                    }
-                    else if (**itListe == "Rd"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString() <<endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::rainDuration)->addValue(instant, valeur->toDouble());
-                        ++itListe;
-                    }
-                    else if (**itListe == "Ri"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString();
-                        cout << ", convertit : " << Convertisseur::convertDistance(valeur->toDouble(), unit->toStdString()[0], 'M') << endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::rainIntensity)->addValue(instant, valeur->toDouble());
-                        ++itListe;
-                    }
-                    else if (**itListe == "Hc"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString();
-                        cout << ", convertit : " << Convertisseur::convertHail(valeur->toDouble(), unit->toStdString()[0], 'M') << endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::hailAccumulation)->addValue(instant, Convertisseur::convertHail(valeur->toDouble(), (*itListe)->toStdString()[0], 'M'));
-                        ++itListe;
-                    }
-                    else if (**itListe == "Hd"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString() <<endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::hailDuration)->addValue(instant, valeur->toDouble());
-                        ++itListe;
-                    }
-                    else if (**itListe == "Hi"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString();
-                        cout << ", convertit : " << Convertisseur::convertHail(valeur->toDouble(), unit->toStdString()[0], 'M') << endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity)->addValue(instant, valeur->toDouble());
-                        ++itListe;
-                    }
-                    else if (**itListe == "Th"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString();
-                        cout << ", convertit : " << Convertisseur::convertTemperature(valeur->toDouble(), unit->toStdString()[0], 'C') << endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C'));
-                        ++itListe;
-                    }
-                    else if (**itListe == "Vh"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString() <<endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->addValue(instant, valeur->toDouble());
-                        ++itListe;
-                    }
-                    else if (**itListe == "Vs"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString() <<endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->addValue(instant, valeur->toDouble());
-                        ++itListe;
-                    }
-                    else if (**itListe == "Vr"){
-                        ++itListe;
-                        valeur = *itListe;
-                        ++itListe;
-                        cout << instant << "*" << valeur->toDouble();
-                        unit = *itListe;
-                        cout << ", unite : "<< unit->toStdString() <<endl;
-                        //						meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->addValue(instant, valeur->toDouble());
-                        ++itListe;
-                    }
-                    else {
-                        break;
-                    }
-                }
-            }
-            itRetour = retour->begin();
-            for (; itRetour!= retour->end(); ++itRetour){
-                auto itListe = (*itRetour)->begin();
-                for (; itListe != (*itRetour)->end(); ++itListe){
-                    delete (*itListe);
-                }
-                delete *itRetour;
-            }
-            delete retour;
-        }
-    }
-    else if (sl.first() == "1"){
-        sl.removeFirst();
-        /** A lot of work to do **/
-    }
-    else if (sl.first() == "2"){
-        sl.removeFirst();
-        //		ui->te_answer->setText(sl.first());
-        cout << sl.first().toStdString() << endl;
-    }
+void MainWindow::clearCurve()
+{
+	for (Capteur* c : t_capteurs){
+		c->clear();
+	}
+	meteo.clear();
 }
 

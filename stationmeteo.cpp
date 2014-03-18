@@ -9,9 +9,9 @@ StationMeteo::StationMeteo(int idOrderMeteo)
         //default colors
         t_capteursStation[i]->setColor(default_c[i]);
 		t_capteursStation[i]->setVisible(false);
-        //test values
-//        t_capteursStation[i]->addValue(5,2*i);
-//        t_capteursStation[i]->addValue(20,3*i);
+		//test values
+//		t_capteursStation[i]->addValue(5,2*i);
+//		t_capteursStation[i]->addValue(20,3*i);
 	}
 }
 
@@ -40,6 +40,13 @@ void StationMeteo::saveData(std::ofstream& stream)
 	for(Capteur* c : t_capteursStation){
 		SaveLoad::saveCapteur(c, stream, i);
 		++i;
+	}
+}
+
+void StationMeteo::clear()
+{
+	for (Capteur* c : t_capteursStation){
+		c->clear();
 	}
 }
 

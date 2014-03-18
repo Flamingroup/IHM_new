@@ -17,10 +17,12 @@ class SerialPort : public Communication
 		QextSerialPort* tmp_port;
 	public:
 		SerialPort(QWidget* parent);
+		~SerialPort();
 		void configurer();
 		void startReading();
 		void stopReading();
 		QByteArray readAll();
+		void sendSpecialCommand(string s);
 	public slots:
 		void onDataReceived();
 		void validateConfig();

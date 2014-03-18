@@ -15,6 +15,7 @@ class Convertisseur {
 
 		/** Pressure */
 		static double convertToPascal(double value, char from);
+		static double convertToHectoPascal(double value, char from);
 		static double convertToBar(double value, char from);
 
 		/** Temperature */
