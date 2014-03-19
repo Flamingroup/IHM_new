@@ -110,7 +110,7 @@ void MainWindow::connections()
     connect(ui->c_airTemperture, SIGNAL(toggled(bool)), this, SLOT(airTemperatureToggled(bool)));
     connect(ui->c_hailAccumulation, SIGNAL(toggled(bool)), this, SLOT(hailAccumulationToggled(bool)));
     connect(ui->c_hailDuration, SIGNAL(toggled(bool)), this, SLOT(hailDurationToggled(bool)));
-    connect(ui->c_hailIntensity, SIGNAL(toggled(bool)), this, SLOT(hailIntensity(bool)));
+    connect(ui->c_hailIntensity, SIGNAL(toggled(bool)), this, SLOT(hailIntensityToggled(bool)));
     connect(ui->c_heatTemperature, SIGNAL(toggled(bool)), this, SLOT(heatTemperatureToggled(bool)));
     connect(ui->c_heatVoltage, SIGNAL(toggled(bool)), this, SLOT(heatVoltageToggled(bool)));
     connect(ui->c_rainAccumulation, SIGNAL(toggled(bool)), this, SLOT(rainAccumulationToggled(bool)));
@@ -360,7 +360,7 @@ void MainWindow::stopAcquisition()
     timer.stop();
     if ( com != NULL)
         com->unConfigure();
-    ui->l_acquState->setText("Pas d'acquistion en cours");
+    ui->l_acquState->setText("Pas d'acquisition en cours");
 }
 
 void MainWindow::changeCurveColor()
@@ -531,7 +531,7 @@ void MainWindow::hailDurationToggled(bool ischecked)
     capt->setVisible(ischecked);
 }
 
-void MainWindow::hailIntensity(bool ischecked)
+void MainWindow::hailIntensityToggled(bool ischecked)
 {
     toggleChanged(ischecked);
     Capteur* capt = meteo.getCapt(StationMeteo::TypeCapteur::hailIntensity);

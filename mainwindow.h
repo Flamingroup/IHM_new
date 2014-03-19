@@ -61,7 +61,7 @@ class MainWindow : public QMainWindow
 		void airTemperatureToggled(bool);
 		void hailAccumulationToggled(bool);
 		void hailDurationToggled(bool);
-		void hailIntensity(bool);
+		void hailIntensityToggled(bool);
 		void heatTemperatureToggled(bool);
 		void heatVoltageToggled(bool);
 		void rainAccumulationToggled(bool);
