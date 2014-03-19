@@ -673,8 +673,7 @@ void MainWindow::lireRetour()
 						Capteur *c = meteo.getCapt(StationMeteo::TypeCapteur::windDirectionAvrg);
 						c->addValue(instant, valeur->toDouble());
 						ui->v_windDirectionAvrg->setText(*valeur);
-						if(c->isVisible())
-							ui->Compass->setValue(valeur->toDouble()); // bouge boussole fct direction
+                        ui->Compass->setValue(valeur->toDouble()); // bouge boussole fct direction
 						++itListe;
 					}
 					else if (**itListe == "Sm"){
