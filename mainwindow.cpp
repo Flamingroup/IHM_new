@@ -8,6 +8,7 @@
 #include <fstream>
 #include <saveload.h>
 #include <QFileDialog>
+#include <QComboBox>
 
 using std::cout;
 using std::cerr;
@@ -22,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     p_plot = new Plot();
 	t_capteurs.push_back(new Capteur());
 	t_capteurs[0]->setPlot(p_plot);
+	t_capteurs[0]->setVisible(false);
     meteo.setPlot(p_plot);
     ui->plotLayout->addWidget(p_plot, 1, 0);
 	ui->spin_delai_acquisition->setMinimum(1.0);
@@ -40,6 +42,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Compass->setValue(180);
     ui->Compass->setNeedle(needle);
     ui->Compass->setReadOnly(true);
+
+	ui->cb_airPressure->addItems(meteo.getItem(StationMeteo::TypeCapteur::airPressure));
+	ui->cb_airTemperture->addItems(meteo.getItem(StationMeteo::TypeCapteur::airTemperture));
+	ui->cb_analog1->addItem("V");
+	ui->cb_analog1->addItem("mV");
+	ui->cb_heatTemperature->addItems(meteo.getItem(StationMeteo::TypeCapteur::heatTemperature));
+	ui->cb_heatVoltage->addItems(meteo.getItem(StationMeteo::TypeCapteur::heatVoltage));
+	ui->cb_rainAccumulation->addItems(meteo.getItem(StationMeteo::TypeCapteur::rainAccumulation));
+	ui->cb_refVoltage->addItems(meteo.getItem(StationMeteo::TypeCapteur::refVoltage));
+	ui->cb_supplyVoltage->addItems(meteo.getItem(StationMeteo::TypeCapteur::supplyVoltage));
 
 }
 
@@ -630,16 +642,9 @@ void MainWindow::waitToReadslot(){
 
 void MainWindow::lireRetour()
 {
-
-//	#ifdef Q_OS_WIN
-//		Sleep(uint(100));
-//	#else
-//		struct timespec ts = { 100 / 1000, (100 % 1000) * 1000 * 1000 };
-//		nanosleep(&ts, NULL);
-//	#endif
-	QString s(com->readAll());
+	QString s = "0;20;2000;0R1,Dm=027D,Sm=0.1M\r\n0R2,Ta=74.6F,Ua=14.7P,Pa=1012.9H\r\n0R3,Rc=0.10M,Rd=2380s,Ri=0.0M,Hc=0.0M,Hd=0s,Hi=0.0M\r\n0R5,Th=76.1F,Vh=11.5N,Vs=11.5V,Vr=3.510V\r\n";
+//	QString s(com->readAll());
 	ui->te_specialAnswer->setText(s);
-	//QString s = "0;20;2000;0R1,Dm=027D,Sm=0.1M\r\n0R2,Ta=74.6F,Ua=14.7P,Pa=1012.9H\r\n0R3,Rc=0.10M,Rd=2380s,Ri=0.0M,Hc=0.0M,Hd=0s,Hi=0.0M\r\n0R5,Th=76.1F,Vh=11.5N,Vs=11.5V,Vr=3.510V\r\n";
 	cout << s.toStdString() << endl;
 	double instant, analog1value;
 	QStringList sl = s.split(';');
@@ -684,8 +689,8 @@ void MainWindow::lireRetour()
 						++itListe;
 						valeur = *itListe;
 						++itListe;
-						meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C'));
-						ui->v_airTemperture->setText(QString::number(Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C')));
+						meteo.getCapt(StationMeteo::TypeCapteur::airTemperture)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], Convertisseur::resolveToFromString(ui->cb_airTemperture->currentText().toStdString())));
+						ui->v_airTemperture->setText(QString::number(Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], Convertisseur::resolveToFromString(ui->cb_airTemperture->currentText().toStdString()))));
 						++itListe;
 					}
 					else if (**itListe == "Ua"){
@@ -700,16 +705,16 @@ void MainWindow::lireRetour()
 						++itListe;
 						valeur = *itListe;
 						++itListe;
-						meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(instant, Convertisseur::convertPression(valeur->toDouble(), (*itListe)->toStdString()[0], 'H'));
-						ui->v_airPressure->setText(QString::number(Convertisseur::convertPression(valeur->toDouble(), (*itListe)->toStdString()[0], 'H')));
+						meteo.getCapt(StationMeteo::TypeCapteur::airPressure)->addValue(instant, Convertisseur::convertPression(valeur->toDouble(), (*itListe)->toStdString()[0], Convertisseur::resolveToFromString(ui->cb_airPressure->currentText().toStdString())));
+						ui->v_airPressure->setText(QString::number(Convertisseur::convertPression(valeur->toDouble(), (*itListe)->toStdString()[0], Convertisseur::resolveToFromString(ui->cb_airPressure->currentText().toStdString()))));
 						++itListe;
 					}
 					else if (**itListe == "Rc"){
 						++itListe;
 						valeur = *itListe;
 						++itListe;
-						meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->addValue(instant, Convertisseur::convertDistance(valeur->toDouble(), (*itListe)->toStdString()[0], 'M'));
-						ui->v_rainAccumulation->setText(QString::number(Convertisseur::convertDistance(valeur->toDouble(), (*itListe)->toStdString()[0], 'M')));
+						meteo.getCapt(StationMeteo::TypeCapteur::rainAccumulation)->addValue(instant, Convertisseur::convertDistance(valeur->toDouble(), (*itListe)->toStdString()[0], Convertisseur::resolveToFromString(ui->cb_rainAccumulation->currentText().toStdString())));
+						ui->v_rainAccumulation->setText(QString::number(Convertisseur::convertDistance(valeur->toDouble(), (*itListe)->toStdString()[0], Convertisseur::resolveToFromString(ui->cb_rainAccumulation->currentText().toStdString()))));
 						++itListe;
 					}
 					else if (**itListe == "Rd"){
@@ -756,32 +761,32 @@ void MainWindow::lireRetour()
 						++itListe;
 						valeur = *itListe;
 						++itListe;
-						meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C'));
-						ui->v_heatTemperature->setText(QString::number(Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], 'C')));
+						meteo.getCapt(StationMeteo::TypeCapteur::heatTemperature)->addValue(instant, Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], Convertisseur::resolveToFromString(ui->cb_heatTemperature->currentText().toStdString())));
+						ui->v_heatTemperature->setText(QString::number(Convertisseur::convertTemperature(valeur->toDouble(), (*itListe)->toStdString()[0], Convertisseur::resolveToFromString(ui->cb_heatTemperature->currentText().toStdString()))));
 						++itListe;
 					}
 					else if (**itListe == "Vh"){
 						++itListe;
 						valeur = *itListe;
 						++itListe;
-						meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->addValue(instant, valeur->toDouble());
-						ui->v_heatVoltage->setText(QString::number(valeur->toDouble()));
+						meteo.getCapt(StationMeteo::TypeCapteur::heatVoltage)->addValue(instant, Convertisseur::convertVoltage(valeur->toDouble(), 'V', Convertisseur::resolveToFromString(ui->cb_heatVoltage->currentText().toStdString())));
+						ui->v_heatVoltage->setText(QString::number(Convertisseur::convertVoltage(valeur->toDouble(), 'V', Convertisseur::resolveToFromString(ui->cb_heatVoltage->currentText().toStdString()))));
 						++itListe;
 					}
 					else if (**itListe == "Vs"){
 						++itListe;
 						valeur = *itListe;
 						++itListe;
-						meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->addValue(instant, valeur->toDouble());
-						ui->v_supplyVoltage->setText(QString::number(valeur->toDouble()));
+						meteo.getCapt(StationMeteo::TypeCapteur::supplyVoltage)->addValue(instant, Convertisseur::convertVoltage(valeur->toDouble(), 'V', Convertisseur::resolveToFromString(ui->cb_supplyVoltage->currentText().toStdString())));
+						ui->v_supplyVoltage->setText(QString::number(Convertisseur::convertVoltage(valeur->toDouble(), 'V', Convertisseur::resolveToFromString(ui->cb_supplyVoltage->currentText().toStdString()))));
 						++itListe;
 					}
 					else if (**itListe == "Vr"){
 						++itListe;
 						valeur = *itListe;
 						++itListe;
-						meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->addValue(instant, valeur->toDouble());
-						ui->v_refVoltage->setText(QString::number(valeur->toDouble()));
+						meteo.getCapt(StationMeteo::TypeCapteur::refVoltage)->addValue(instant, Convertisseur::convertVoltage(valeur->toDouble(), 'V', Convertisseur::resolveToFromString(ui->cb_refVoltage->currentText().toStdString())));
+						ui->v_refVoltage->setText(QString::number(Convertisseur::convertVoltage(valeur->toDouble(), 'V', Convertisseur::resolveToFromString(ui->cb_refVoltage->currentText().toStdString()))));
 						++itListe;
 					}
 					else {
@@ -807,7 +812,7 @@ void MainWindow::lireRetour()
 	else if (sl.first() == "2"){
 		sl.removeFirst();
 		//		ui->te_answer->setText(sl.first());
-		cout << sl.first().toStdString() << endl;
+		cout << "**" << endl << sl.first().toStdString() << endl;
 	}
 }
 

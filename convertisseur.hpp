@@ -1,3 +1,6 @@
+#include <string>
+using std::string;
+
 class Convertisseur {
 	public:
 		static double convertFromTo(double value, char from, char to);
@@ -6,7 +9,8 @@ class Convertisseur {
 		static double convertSpeed(double value, char from, char to);
 		static double convertDistance(double value, char from, char to);
 		static double convertHail(double value, char from, char to);
-
+		static char resolveToFromString(string stringUnite);
+		static double convertVoltage(double value, char from, char to);
 	private :
 		static double convertToBase(double value, char from);
 		static double convertToMilli(double value, char from);
@@ -27,6 +31,8 @@ class Convertisseur {
 		static double convertToMeterSec (double value, char from);
 
 		static double convertToMillimeters(double value, char from);
+
+		static double convertToInchs(double value, char from);
 
 		static double convertToHpC(double value, char from);
 };

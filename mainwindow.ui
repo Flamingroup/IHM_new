@@ -43,16 +43,22 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-32</y>
              <width>485</width>
-             <height>583</height>
+             <height>607</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
+            <item row="23" column="3">
+             <widget class="QComboBox" name="cb_analog1"/>
+            </item>
+            <item row="21" column="3">
+             <widget class="QComboBox" name="cb_supplyVoltage"/>
+            </item>
             <item row="16" column="2">
              <widget class="QLabel" name="v_hailDuration">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -69,7 +75,7 @@
             <item row="3" column="2">
              <widget class="QLabel" name="v_windSpeedAverage">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -89,7 +95,7 @@
             <item row="7" column="2">
              <widget class="QLabel" name="v_airPressure">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -106,7 +112,7 @@
             <item row="8" column="2">
              <widget class="QLabel" name="v_rainAccumulation">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -150,7 +156,7 @@
             <item row="17" column="3">
              <widget class="QLabel" name="u_hailIntensity">
               <property name="text">
-               <string>...</string>
+               <string>hits/cm²/h</string>
               </property>
              </widget>
             </item>
@@ -171,7 +177,7 @@
             <item row="17" column="2">
              <widget class="QLabel" name="v_hailIntensity">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -188,41 +194,54 @@
             <item row="9" column="2">
              <widget class="QLabel" name="v_rainDuration">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="22" column="1">
+             <widget class="QPushButton" name="bc_refVoltage">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="0">
+             <widget class="QCheckBox" name="c_hailAccumulation">
+              <property name="text">
+               <string>Accumulation de grêle</string>
               </property>
              </widget>
             </item>
             <item row="3" column="3">
              <widget class="QLabel" name="u_windSpeedAverage">
               <property name="text">
-               <string>m/s..</string>
+               <string>m/s</string>
               </property>
              </widget>
             </item>
             <item row="13" column="2">
              <widget class="QLabel" name="v_rainIntensity">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
-            <item row="8" column="3">
-             <widget class="QLabel" name="u_rainAccumulation">
-              <property name="text">
-               <string>mm, in</string>
-              </property>
-             </widget>
-            </item>
             <item row="20" column="2">
              <widget class="QLabel" name="v_heatVoltage">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -232,7 +251,7 @@
             <item row="15" column="2">
              <widget class="QLabel" name="v_hailAccumulation">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -242,38 +261,17 @@
             <item row="15" column="3">
              <widget class="QLabel" name="u_hailAccumulation">
               <property name="text">
-               <string>hits/cm2, ...</string>
-              </property>
-             </widget>
-            </item>
-            <item row="21" column="3">
-             <widget class="QLabel" name="u_supplyVoltage">
-              <property name="text">
-               <string>V</string>
+               <string>hits/cm²</string>
               </property>
              </widget>
             </item>
             <item row="21" column="2">
              <widget class="QLabel" name="v_supplyVoltage">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="20" column="3">
-             <widget class="QLabel" name="u_heatTemperature_2">
-              <property name="text">
-               <string>V</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="3">
-             <widget class="QLabel" name="u_airTemperture">
-              <property name="text">
-               <string>C, F</string>
               </property>
              </widget>
             </item>
@@ -304,7 +302,7 @@
             <item row="18" column="2">
              <widget class="QLabel" name="v_heatTemperature">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -315,6 +313,19 @@
              <widget class="QCheckBox" name="c_windSpeedAverage">
               <property name="text">
                <string>Vitesse moyenne du vent</string>
+              </property>
+             </widget>
+            </item>
+            <item row="16" column="1">
+             <widget class="QPushButton" name="bc_hailDuration">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>
@@ -339,27 +350,6 @@
               </property>
              </widget>
             </item>
-            <item row="7" column="3">
-             <widget class="QLabel" name="u_airPressure">
-              <property name="text">
-               <string>Pa, hPa, bar, ...</string>
-              </property>
-             </widget>
-            </item>
-            <item row="18" column="3">
-             <widget class="QLabel" name="u_heatTemperature">
-              <property name="text">
-               <string>C, F</string>
-              </property>
-             </widget>
-            </item>
-            <item row="15" column="0">
-             <widget class="QCheckBox" name="c_hailAccumulation">
-              <property name="text">
-               <string>Accumulation de grêle</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="3">
              <widget class="QLabel" name="l_unit">
               <property name="text">
@@ -373,7 +363,7 @@
             <item row="2" column="2">
              <widget class="QLabel" name="v_windDirectionAvrg">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -397,7 +387,7 @@
             <item row="22" column="2">
              <widget class="QLabel" name="v_refVoltage">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -411,24 +401,10 @@
               </property>
              </widget>
             </item>
-            <item row="23" column="3">
-             <widget class="QLabel" name="u_analog1">
-              <property name="text">
-               <string>Label</string>
-              </property>
-             </widget>
-            </item>
-            <item row="22" column="3">
-             <widget class="QLabel" name="u_refVoltage">
-              <property name="text">
-               <string>V</string>
-              </property>
-             </widget>
-            </item>
             <item row="9" column="3">
              <widget class="QLabel" name="u_rainDuration">
               <property name="text">
-               <string>sec</string>
+               <string>secondes</string>
               </property>
              </widget>
             </item>
@@ -442,7 +418,7 @@
             <item row="23" column="2">
              <widget class="QLabel" name="v_analog1">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -452,7 +428,7 @@
             <item row="16" column="3">
              <widget class="QLabel" name="u_hailDuration">
               <property name="text">
-               <string>sec</string>
+               <string>secondes</string>
               </property>
              </widget>
             </item>
@@ -462,7 +438,7 @@
                <enum>Qt::TabFocus</enum>
               </property>
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -472,7 +448,7 @@
             <item row="5" column="2">
              <widget class="QLabel" name="v_airTemperture">
               <property name="text">
-               <string>Label</string>
+               <string>0</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -603,19 +579,6 @@
               </property>
              </widget>
             </item>
-            <item row="16" column="1">
-             <widget class="QPushButton" name="bc_hailDuration">
-              <property name="maximumSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
             <item row="17" column="1">
              <widget class="QPushButton" name="bc_hailIntensity">
               <property name="maximumSize">
@@ -668,19 +631,6 @@
               </property>
              </widget>
             </item>
-            <item row="22" column="1">
-             <widget class="QPushButton" name="bc_refVoltage">
-              <property name="maximumSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
             <item row="23" column="1">
              <widget class="QPushButton" name="bc_analog1">
               <property name="maximumSize">
@@ -694,6 +644,24 @@
               </property>
              </widget>
             </item>
+            <item row="20" column="3">
+             <widget class="QComboBox" name="cb_heatVoltage"/>
+            </item>
+            <item row="22" column="3">
+             <widget class="QComboBox" name="cb_refVoltage"/>
+            </item>
+            <item row="5" column="3">
+             <widget class="QComboBox" name="cb_airTemperture"/>
+            </item>
+            <item row="18" column="3">
+             <widget class="QComboBox" name="cb_heatTemperature"/>
+            </item>
+            <item row="7" column="3">
+             <widget class="QComboBox" name="cb_airPressure"/>
+            </item>
+            <item row="8" column="3">
+             <widget class="QComboBox" name="cb_rainAccumulation"/>
+            </item>
            </layout>
            <zorder>l_name</zorder>
            <zorder>l_value</zorder>
@@ -706,14 +674,11 @@
            <zorder>u_windSpeedAverage</zorder>
            <zorder>v_airTemperture</zorder>
            <zorder>c_airTemperture</zorder>
-           <zorder>u_airTemperture</zorder>
            <zorder>u_relativeHumidity</zorder>
            <zorder>c_relativeHumidity</zorder>
            <zorder>v_relativeHumidity</zorder>
            <zorder>c_airPressure</zorder>
            <zorder>v_airPressure</zorder>
-           <zorder>u_airPressure</zorder>
-           <zorder>u_rainAccumulation</zorder>
            <zorder>c_rainAccumulation</zorder>
            <zorder>v_rainAccumulation</zorder>
            <zorder>v_rainIntensity</zorder>
@@ -729,21 +694,16 @@
            <zorder>u_hailDuration</zorder>
            <zorder>v_hailIntensity</zorder>
            <zorder>u_hailIntensity</zorder>
-           <zorder>u_heatTemperature</zorder>
            <zorder>v_heatTemperature</zorder>
            <zorder>c_hailIntensity</zorder>
            <zorder>c_heatTemperature</zorder>
-           <zorder>u_supplyVoltage</zorder>
            <zorder>v_heatVoltage</zorder>
            <zorder>c_heatVoltage</zorder>
-           <zorder>u_heatTemperature_2</zorder>
            <zorder>v_supplyVoltage</zorder>
            <zorder>c_supplyVoltage</zorder>
            <zorder>c_refVoltage</zorder>
-           <zorder>u_refVoltage</zorder>
            <zorder>v_refVoltage</zorder>
            <zorder>v_analog1</zorder>
-           <zorder>u_analog1</zorder>
            <zorder>c_analog1</zorder>
            <zorder>c_rainIntensity</zorder>
            <zorder>verticalSpacer_2</zorder>
@@ -764,6 +724,14 @@
            <zorder>bc_supplyVoltage</zorder>
            <zorder>bc_refVoltage</zorder>
            <zorder>bc_analog1</zorder>
+           <zorder>cb_analog1</zorder>
+           <zorder>cb_refVoltage</zorder>
+           <zorder>cb_supplyVoltage</zorder>
+           <zorder>cb_heatVoltage</zorder>
+           <zorder>cb_airTemperture</zorder>
+           <zorder>cb_heatTemperature</zorder>
+           <zorder>cb_airPressure</zorder>
+           <zorder>cb_rainAccumulation</zorder>
           </widget>
          </widget>
         </item>
@@ -806,6 +774,13 @@
           <widget class="QTextEdit" name="te_specialAnswer">
            <property name="readOnly">
             <bool>true</bool>
+           </property>
+           <property name="html">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>

@@ -1,6 +1,6 @@
 #include "convertisseur.hpp"
-
 #include <iostream>
+
 using std::cerr;
 using std::endl;
 
@@ -134,7 +134,7 @@ double Convertisseur::convertPression(double value, char from, char to)
         return convertToPascal(value, from);
     case 'B': // bar
         return convertToBar(value, from);
-	case 'H': // bar
+	case 'H': // HectoPascal
 		return convertToHectoPascal(value, from);
 	case '#':
         cerr << "Invalid data" << endl;
@@ -318,29 +318,44 @@ double Convertisseur::convertToMeterSec(double value, char from)
   Distance
   */
 double Convertisseur::convertDistance(double value, char from, char to) {
-    switch(to) {
-    case 'M': // mm (/h)
-        return convertToMillimeters(value, from);
-    case '#':
-        cerr << "Invalid data" << endl;
-        return value;
-    default:
-        cerr << "Error, can't convert to '" << to << "', correct : M(mm)" << endl;
-        return value;
-    }
+	switch(to) {
+		case 'M': // mm (/h)
+			return convertToMillimeters(value, from);
+		case 'I': // mm (/h)
+			return convertToInchs(value, from);
+		case '#':
+			cerr << "Invalid data" << endl;
+			return value;
+		default:
+			cerr << "Error, can't convert to '" << to << "', correct : M(mm)" << endl;
+			return value;
+	}
 }
 
 double Convertisseur::convertToMillimeters(double value, char from)
 {
-    switch(from) {
-    case 'I': // inch
-        return value*25.4;
-    case 'M': // meme unité
-        return value;
-    default:
-        cerr << "Error, can't convert from '" << from << "', correct : I (inch)" << endl;
-        return value;
-    }
+	switch(from) {
+	case 'I': // inch
+		return value*25.4;
+	case 'M': // meme unité
+		return value;
+	default:
+		cerr << "Error, can't convert from '" << from << "', correct : I (inch)" << endl;
+		return value;
+	}
+}
+
+double Convertisseur::convertToInchs(double value, char from)
+{
+	switch(from) {
+	case 'I': // inch
+		return value;
+	case 'M': // meme unité
+		return value/25.4;
+	default:
+		cerr << "Error, can't convert from '" << from << "', correct : I (inch)" << endl;
+		return value;
+	}
 }
 
 
@@ -358,7 +373,54 @@ double Convertisseur::convertHail(double value, char from, char to)
     default:
         cerr << "Error, can't convert to '" << to << "', correct : M(hits/cm²)" << endl;
         return value;
-    }
+	}
+}
+
+double Convertisseur::convertVoltage(double value, char from, char to)
+{
+	switch(to) {
+		case 'v': // miliVolt
+			return value*1000.0;
+		case 'V': //Volts
+			return value;
+		case '#':
+			cerr << "Invalid data" << endl;
+			return value;
+		default:
+			cerr << "Error, can't convert to '" << to << "', correct : V (Volt), v (miliVolt)" << endl;
+			return value;
+	}
+}
+
+/**
+ * @brief Convertisseur::resolveToFromString
+ * @param stringUnite
+ * @return
+ */
+char Convertisseur::resolveToFromString(std::string stringUnite)
+{
+	if (stringUnite.compare("Pa") == 0){
+		return 'P';
+	} else if (stringUnite.compare("hPa") == 0){
+		return 'H';
+	} else if (stringUnite.compare("bar") == 0){
+		return 'B';
+	} else if (stringUnite.compare("C") == 0){
+		return 'C';
+	} else if (stringUnite.compare("F") == 0){
+		return 'F';
+	} else if (stringUnite.compare("K") == 0){
+		return 'K';
+	} else if (stringUnite.compare("V") == 0){
+		return 'V';
+	} else if (stringUnite.compare("mV") == 0){
+		return 'v';
+	} else if (stringUnite.compare("mm") == 0){
+		return 'M';
+	} else if (stringUnite.compare("in") == 0){
+		return 'I';
+	}
+	return '#';
 }
 
 double Convertisseur::convertToHpC(double value, char from)

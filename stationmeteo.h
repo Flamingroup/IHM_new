@@ -3,13 +3,16 @@
 #include <vector>
 #include <capteurs/capteur.h>
 #include <string>
+#include <map>
 
+using std::map;
 
 class StationMeteo
 {
 	private:
 		std::vector<Capteur*> t_capteursStation;
 		int idOrderMeteo;
+		void initMapUnite();
 	public:
 		enum TypeCapteur{
 			airPressure=0,
@@ -45,6 +48,9 @@ class StationMeteo
             QColor(Qt::darkGray),
             QColor(30,60,90)
         };
+
+		QStringList getItem(TypeCapteur t);
+		map<TypeCapteur, QStringList> map_Unite;
 		StationMeteo(int idOrderMeteo = 5);
 		~StationMeteo();
 		std::string getOrderStation();
